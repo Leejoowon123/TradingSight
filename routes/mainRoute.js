@@ -4,7 +4,7 @@
 var express = require('express');
 //Router객체 생성
 var router = express.Router();
-const Stock = require('../models/stockNameCodeModel');
+const Stock = require('../models/stockNameCodeModel'); //
 
 //get main화면을 랜더링
 router.get('/', async (req, res) => {

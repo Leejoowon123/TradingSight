@@ -1,3 +1,31 @@
+.body,
+html {
+  background-color: black;
+  color: white;
+}
+
 .header {
-  font-size: 50px;
+  font-size: 84px;
+  font-weight: bolder;
+  padding-bottom: 20px;
+}
+
+.container1 {
+  height: 100vh;
+  justify-content: center;
+  justify-items: center;
+  align-content: center;
+  align-items: center;
+}
+
+.container2 {
+  text-align: center;
+}
+
+.input {
+  width: 800px;
+  height: 60px;
+  border-radius: 15px;
+  border: 0;
+  font-size: 30px;
 }
