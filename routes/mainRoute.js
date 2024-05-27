@@ -4,19 +4,32 @@
 var express = require('express');
 //Router객체 생성
 var router = express.Router();
-const Main = require('../models/mainModel'); // Main 모델 import
+const Stock = require('../models/stockNameCodeModel');
 
 //get main화면을 랜더링
 router.get('/', async (req, res) => {
   res.render('mainView', { title: 'Express' })
 })
 
-router.post('/data', async (req, res) => {
-  const { name, email } = req.body;
-  const main = new Main({ name, email });
-  await main.save();
-  res.redirect('/');
+router.post('/search', async (req, res) => {
+  const { stock_name } = req.body;
+  console.log(stock_name + " 1");
+
+  try {
+    const stock = await Stock.findOne({ stockName: stock_name });
+    console.log(stock + " 2");
+
+    if (stock) {
+      res.json({ stockCode: stock.stockCode });
+    } else {
+      res.status(404).json({ message: 'Stock not found' });
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server Error' });
+  }
 });
+
 
 //라우터 외부 전송
 module.exports = router;
