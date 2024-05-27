@@ -21,8 +21,10 @@ app.set('view engine', 'ejs');
 
 // 미들웨어 설정
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, 'public')));
-
+app.use('/public/stylesheets', (req, res, next) => {
+  res.setHeader('Content-Type', 'text/css');
+  next();
+}, express.static(path.join(__dirname, 'public', 'stylesheets')));
 // 라우터 설정
 app.use('/', mainRouter);
 
