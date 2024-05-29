@@ -8,12 +8,43 @@
 </head>
 
 <body>
-    <h1>test</h1>
+    <h1>Stock Vision</h1>
 
-    <p>Stock Code = <%= stockName %>
-            <p>Stock Code = <%= stockCode %>
+    <p>Stock Name = <%= stockName %>
+    </p>
+    <p>Stock Code = <%= stockCode %>
+    </p>
 
-            </p>
+    <!-- 이미지를 표시할 영역 -->
+    <div id="image-container">
+        <p>이미지가 표시될 곳입니다.</p>
+    </div>
+
+    <!-- 이미지를 보기 위한 버튼 -->
+    <button onclick="loadImage()">이미지 보기</button>
+
+    <script>
+        // 이미지를 로드하기 위한 함수
+        function loadImage() {
+            // AJAX 요청
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/stockShow/image');
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.responseType = 'blob'; // 이미지 데이터를 Blob 형식으로 받아옴
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    // 성공적으로 이미지를 받았을 때 화면에 표시
+                    var imageContainer = document.getElementById('image-container');
+                    var imageUrl = URL.createObjectURL(xhr.response);
+                    imageContainer.innerHTML = `<img src="${imageUrl}" alt="주식 예측 이미지">`;
+                } else {
+                    // 에러 처리
+                    console.error('이미지를 받아오는 데 실패했습니다.');
+                }
+            };
+            xhr.send();
+        }
+    </script>
 </body>
 
 </html>
