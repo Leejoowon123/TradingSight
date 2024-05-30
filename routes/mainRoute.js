@@ -5,6 +5,7 @@ var express = require('express');
 //Router객체 생성
 var router = express.Router();
 const Stock = require('../models/stockNameCodeModel');
+const User = require('../models/userIdPasswordModel');
 const jwt = require('jsonwebtoken'); //jwt토큰
 const http = require('http');
 const { ConnectionStates } = require('mongoose');
@@ -12,11 +13,95 @@ const path = require('path'); // path 모듈 추가
 const fs = require('fs'); // fs 모듈 추가
 const { session } = require('passport');
 
-
-
 //get main화면을 랜더링
 router.get('/', async (req, res) => {
-  res.render('mainView')
+  const loggedIn = req.session.userId ? true : false;
+  res.render('mainView', { loggedIn })
+})
+
+router.get('/user/signIn', async (req, res) => {
+  res.render('signInView');
+})
+
+router.post('/user/signIn', async (req, res) => {
+  res.redirect('/user/signIn');
+})
+
+router.post('/user/signIn/signInLogic', async (req, res) => {
+  const { userId, userPassword } = req.body;
+  console.log({ userId, userPassword });
+  try {
+    const user = await User.findOne({ userId, userPassword });
+    console.log(user + '로그인 유저 정보');
+
+    if (!user) {
+      res.send("잘못된 사용자 정보");
+    }
+    else {
+      req.session.userId = user.userId;
+      res.redirect('/');
+    }
+  } catch (error) {
+    console.error("Error during login:", error);
+    res.status(500).send("Error during login");
+  }
+})
+
+router.get('/user/signUp', async (req, res) => {
+  res.render('signUpView');
+})
+
+router.post('/user/signUp', async (req, res) => {
+  res.redirect('/user/signUp');
+})
+
+router.post('/user/signUp/signUpLogic', async (req, res) => {
+  const { userId, userPassword } = req.body;
+
+  try {
+    const user = await User.create({ userId, userPassword });
+    console.log(user + ' user created!');
+    res.redirect('/user/signIn');
+  } catch {
+    console.log('user create error');
+    res.status(500).send("Error creating user");
+  }
+})
+
+router.get('/user/myPage', async (req, res) => {
+  const userId = req.session.userId;
+
+  const user = await User.findOne({ userId });
+
+  if (userId) {
+    console.log(user.userId);
+    res.render('myPageView', { userId: user.userId });
+  }
+  else {
+    res.redirect('/user/signIn')
+  }
+})
+
+router.post('/user/myPage', async (req, res) => {
+  res.redirect('/user/myPage');
+})
+
+router.post('/user/logut', async (req, res) => {
+
+  const userId = req.session.userId;
+
+  if (userId) {
+    req.session.destroy((err) => {
+      if (err) {
+        console.error('Error while logging out:', err);
+      }
+      else {
+        res.redirect('/');
+      }
+    });
+  } else {
+    res.redirect('/');
+  }
 })
 
 //main에서 주식을 검색하면 세션에 주식 값과 코드를 넣음.
@@ -145,6 +230,8 @@ router.post('/stockShow/image', (req, res) => {
     res.sendFile(path.join(__dirname, imagePath));
   }
 });
+
+
 
 //라우터 외부 전송
 module.exports = router;

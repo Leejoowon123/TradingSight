@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>signIn</title>
+</head>
+
+<body>
+    <div>로그인 페이지</div>
+    <form action="/user/signIn/signInLogic" method="post">
+        <lable for="userId">ID</lable>
+        <div class="idarea">
+            <input type="text" class="userId" id="userId" name="userId">
+        </div>
+        <label for="userPassword">Password</label>
+        <div class="passwordarea">
+            <input type="password" class="userpassword" id="userPassword" name="userPassword">
+        </div>
+        <button type="submit">sign In</button>
+    </form>
+
+</body>
+
+</html>
