@@ -11,7 +11,7 @@ html {
 }
 
 .container1 {
-  height: 100vh;
+  height: 90vh;
   justify-content: center;
   justify-items: center;
   align-content: center;
@@ -28,4 +28,8 @@ html {
   border-radius: 15px;
   border: 0;
   font-size: 30px;
+}
+
+.loginarea {
+  text-align: right;
 }

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>signUpView</title>
+</head>
+
+<body>
+    <div>회원가입 페이지</div>
+    <form action="/user/signUp/signUpLogic" method="post">
+        <label for="userId">ID</label>
+        <div>
+            <input class="userId" type="text" id="userId" name="userId">
+        </div>
+        <label for="userPassword">Password</label>
+        <div>
+            <input class="userPassword" type="password" id="userPassword" name="userPassword">
+        </div>
+        <button type="submit">회원가입</button>
+    </form>
+</body>
+
+</html>
