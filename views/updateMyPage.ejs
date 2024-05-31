@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>myPage</title>
+</head>
+
+<body>
+    <div>myPage</div>
+    <label for="userId">사용자 ID</label>
+    <div class="userIdarea">
+        <p>
+            <%= userId %>
+        </p>
+    </div>
+    <form action="/user/myPage/updateNewPassword" method="post">
+        <div>
+            <label for="userPassword">변경할 비밀번호</label>
+            <!-- 사용자가 입력할 새 비밀번호 -->
+            <input type="text" id="userPassword" name="userPassword" placeholder="새 비밀번호">
+        </div>
+        <div class="removeId">
+            <button type="submit">회원정보 수정</button>
+        </div>
+    </form>
+</body>
+
+</html>

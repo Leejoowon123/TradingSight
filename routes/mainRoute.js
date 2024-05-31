@@ -58,15 +58,33 @@ router.post('/user/signUp', async (req, res) => {
 router.post('/user/signUp/signUpLogic', async (req, res) => {
   const { userId, userPassword } = req.body;
 
-  try {
-    const user = await User.create({ userId, userPassword });
-    console.log(user + ' user created!');
-    res.redirect('/user/signIn');
-  } catch {
-    console.log('user create error');
-    res.status(500).send("Error creating user");
+  // 아이디 유효성 검사: 8자 이상, 한글과 영어 숫자만 허용
+  const userIdRegex = /^[가-힣a-zA-Z0-9]{8,}$/;
+  if (!userIdRegex.test(userId)) {
+    return res.status(400).send('아이디는 8자 이상이어야 하며, 한글과 영어 숫자만 사용 가능합니다.');
   }
-})
+
+  // 비밀번호 유효성 검사: 8자 이상
+  if (userPassword.length < 8) {
+    return res.status(400).send('비밀번호는 8자 이상이어야 합니다.');
+  }
+
+  const user = await User.findOne({ userId });
+
+  if (!user) {
+    try {
+      const newUser = await User.create({ userId, userPassword });
+      console.log(newUser + ' user created!');
+      res.redirect('/user/signIn');
+    } catch (error) {
+      console.error('user create error:', error);
+      res.status(500).send("Error creating user");
+    }
+  } else {
+    res.status(400).send('중복된 아이디');
+  }
+});
+
 
 router.get('/user/myPage', async (req, res) => {
   const userId = req.session.userId;
@@ -86,7 +104,7 @@ router.post('/user/myPage', async (req, res) => {
   res.redirect('/user/myPage');
 })
 
-router.post('/user/logut', async (req, res) => {
+router.post('/user/logout', async (req, res) => {
 
   const userId = req.session.userId;
 
@@ -103,6 +121,52 @@ router.post('/user/logut', async (req, res) => {
     res.redirect('/');
   }
 })
+
+router.post('/user/myPage/deleteUser', async (req, res) => {
+  const userId = req.session.userId;
+  console.log(userId + "delete방면");
+  if (userId) {
+    const deletedUser = await User.findOneAndDelete({ userId: userId });
+    console.log(deletedUser + "이 삭제되었습니다");
+    req.session.destroy();
+    res.redirect('/');
+  }
+  else {
+    res.status(500).send('delete Error' + error);
+  }
+})
+
+router.get('/user/myPage/updateMyPage', async (req, res) => {
+  userId = req.session.userId;
+  const user = await User.findOne({ userId });
+  res.render('updateMyPage', { userId: user.userId, userPassword: user.userPassword });
+
+})
+
+router.post('/user/myPage/updateUser', async (req, res) => {
+  res.redirect('/user/myPage/updateMyPage')
+})
+
+router.post('/user/myPage/updateNewPassword', async (req, res) => {
+  const userId = req.session.userId;
+  const newPassword = req.body.userPassword; // 새 비밀번호를 가져옴
+  try {
+    if (userId) {
+      // 사용자 아이디로 데이터베이스에서 사용자를 찾아 비밀번호 업데이트
+      await User.updateOne({ userId: userId }, { $set: { userPassword: newPassword } });
+
+      console.log('비밀번호 업데이트 완료');
+      res.redirect('/user/myPage');
+    } else {
+      // 사용자 아이디가 없으면 오류 메시지를 반환
+      throw new Error('User ID not found');
+    }
+  } catch (error) {
+    console.error('Error updating password:', error);
+    res.status(500).send('Error updating password');
+  }
+});
+
 
 //main에서 주식을 검색하면 세션에 주식 값과 코드를 넣음.
 router.post('/search', async (req, res) => {

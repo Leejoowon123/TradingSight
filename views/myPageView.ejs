@@ -1,26 +1,40 @@
 <!DOCTYPE html>
-<html lang="en">
+< lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>myPage</title>
-</head>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>myPage</title>
+        <link rel="stylesheet" href="../public/stylesheets/">
+    </head>
 
-<body>
-    <div>myPage</div>
-    <label for="userId">사용자 ID</label>
-    <div class="userIdarea">
-        <p>
-            <%= userId %>
-        </p>
-    </div>
-</body>
+    <body>
+        <div>myPage</div>
+        <label for="userId">사용자 ID</label>
+        <div class="userIdarea">
+            <p>
+                <%= userId %>
+            </p>
+        </div>
+        <form action="/user/myPage/updateUser" method="post">
+            <div class="removeId">
+                <button type="submit">비밀번호 변경</button>
+            </div>
+        </form>
+        <form action="/user/myPage/deleteUser" method="post">
+            <div class="removeId">
+                <button type="submit" onclick="confirmDelete()">회원탈퇴</button>
+            </div>
+        </form>
+        <script src="../public/javascripts/myPageScripts.js"></script>
+    </body>
+    <script>
+        function confirmDelete() {
+            const confirmation = confirm("정말로 회원탈퇴를 하시겠습니까?");
+            if (confirmation) {
+                document.getElementById('deleteUserForm').submit();
+            }
+        }
+    </script>
 
-<style>
-    .userIdarea {
-        background-color: bisque;
-    }
-</style>
-
-</html>
+    </html>
