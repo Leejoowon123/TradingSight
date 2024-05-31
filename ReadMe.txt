@@ -33,7 +33,7 @@ db에 주식정보 넣는방법
 
 1. mongodb에 데이터베이스이름:TradingSight 컬랙션이름:stock로 생성.
 
-2. 내가보낸 엑셀파일을 다운로드 받은 후 pythonfiles폴더의 insert.py에
+2. 내가보낸 엑셀파일을 2개를(KOSPI, KOSDAQ) 다운로드 받은 후 pythonfiles폴더의 insert.py에
 excel_file = '/Users/Zen1/leeseongjun/KOSDAQ_yfinance_ticker.xlsx'  # Excel 파일 경로
  위 경롤를 다운받은 파일 경로로 변경해서 실행하면 mongodb에 다 들어가있을 것임
 
