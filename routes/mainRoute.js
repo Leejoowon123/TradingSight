@@ -170,7 +170,7 @@ router.get('/stockShow', async (req, res) => {
 
               // 저장할 파일 경로 설정
               const fileName = `${stockCode}.png`;
-              const dirPath = '/Users/Zen1/leeseongjun/nodejsStudy/TradingSight/stockImages';
+              const dirPath = 'C:/workspace/TradingSight/stockImages'; //자신의 경로 변경
               const filePath = path.join(dirPath, fileName);
 
               // 디렉토리 존재 여부 확인 및 생성
@@ -186,7 +186,7 @@ router.get('/stockShow', async (req, res) => {
                 }
 
                 // 이미지 파일 경로 반환
-                const imageUrl = `/Users/Zen1/leeseongjun/nodejsStudy/TradingSight/stockImages${fileName}`;
+                const imageUrl = `C:/workspace/TradingSight/stockImages${fileName}`;
                 res.render('stockShowView', { stockCode, stockName, imageUrl }); //ejs로 값을 넘기기
               });
             } catch (error) {
@@ -224,7 +224,7 @@ router.post('/stockShow/image', (req, res) => {
     const { stockCode } = decoded;  //토큰에 있는 stockCode, stockName에 접근할 수 있음. 
     console.log(stockCode);
     // 이미지 파일 경로 설정
-    const imagePath = `../stockImages/${stockCode}.png`;
+    const imagePath = `C:/workspace/TradingSight/stockImages${stockCode}.png`; //자신의 경로로 변경
     console.log(imagePath);
     // 이미지 파일을 클라이언트에게 전송
     res.sendFile(path.join(__dirname, imagePath));
