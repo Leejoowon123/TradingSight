@@ -19,9 +19,11 @@ router.get('/', async (req, res) => {
   res.render('mainView', { loggedIn })
 })
 
-router.get('/user/signIn', async (req, res) => {
-  res.render('signInView');
-})
+router.get('/user/signIn', (req, res) => {
+  const message = req.query.message || ''; // message 쿼리 파라미터를 가져오고, 값이 없는 경우 빈 문자열을 사용합니다.
+  res.render('signInView', { message }); // 렌더링 시 message 변수를 전달합니다.
+});
+
 
 router.post('/user/signIn', async (req, res) => {
   res.redirect('/user/signIn');
@@ -160,7 +162,7 @@ router.post('/user/myPage/updateNewPassword', async (req, res) => {
     if (userId) {
       // 사용자 아이디로 데이터베이스에서 사용자를 찾아 비밀번호 업데이트
       const result = await User.updateOne({ userId: userId }, { $set: { userPassword: newPassword } });
-      
+
       if (result.nModified > 0) {
         console.log('비밀번호 업데이트 완료');
         res.json({ success: true });
@@ -179,34 +181,40 @@ router.post('/user/myPage/updateNewPassword', async (req, res) => {
 });
 
 
-
-
 //main에서 주식을 검색하면 세션에 주식 값과 코드를 넣음.
 router.post('/search', async (req, res) => {
+  const userId = req.session.userId;
   const { stock_name } = req.body;
   console.log(stock_name + " ejs 값 가져오기 ");
 
-  try {
-    const stock = await Stock.findOne({ stockName: stock_name });
-    console.log(stock + " db로 부터 주식코드 가져오기");
+  if (userId) {
+    try {
+      const stock = await Stock.findOne({ stockName: stock_name });
+      console.log(stock + " db로 부터 주식코드 가져오기");
 
-    if (stock) {
-      //검색한 주식이 있다면 jwt토큰을 생성하고 토큰 안에 stockCode, stockName를 저장한다
-      const token = jwt.sign({
-        stockCode: stock.stockCode, stockName: stock.stockName, role: 'admin'
-      }, '1234');
-      console.log(stock.stockCode + ' 토큰생성시');
-      console.log(stock.stockName + ' 토큰생성시');
-      req.session.token = token;
+      if (stock) {
+        //검색한 주식이 있다면 jwt토큰을 생성하고 토큰 안에 stockCode, stockName를 저장한다
+        const token = jwt.sign({
+          stockCode: stock.stockCode, stockName: stock.stockName, role: 'admin'
+        }, '1234');
+        console.log(stock.stockCode + ' 토큰생성시');
+        console.log(stock.stockName + ' 토큰생성시');
+        req.session.token = token;
 
-      res.redirect('/stockShow');
-    } else {
-      res.status(404).json({ message: 'Stock not found' });
+        res.redirect('/stockShow');
+      } else {
+        res.status(404).json({ message: 'Stock not found' });
+      }
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: 'Server Error' });
     }
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Server Error' });
   }
+  else {
+    res.redirect('/user/signIn?message=로그인 후 이용해주세요');
+  }
+
+
 });
 
 //stockShow화면을 띄움, 값을 표시함
@@ -247,7 +255,7 @@ router.get('/stockShow', async (req, res) => {
 
               // 저장할 파일 경로 설정
               const fileName = `${stockCode}.png`;
-              const dirPath = 'C:/workspace/TradingSight/stockImages';
+              const dirPath = '/Users/Zen1/leeseongjun/nodejsStudy/TradingSight/stockImages';
               const filePath = path.join(dirPath, fileName);
 
               // 디렉토리 존재 여부 확인 및 생성
@@ -263,7 +271,7 @@ router.get('/stockShow', async (req, res) => {
                 }
 
                 // 이미지 파일 경로 반환
-                const imageUrl = `C:/workspace/TradingSight/stockImages${fileName}`;
+                const imageUrl = `/Users/Zen1/leeseongjun/nodejsStudy/TradingSight/stockImages${fileName}`;
                 res.render('stockShowView', { stockCode, stockName, imageUrl }); //ejs로 값을 넘기기
               });
             } catch (error) {
