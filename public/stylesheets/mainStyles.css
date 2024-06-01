@@ -1,35 +1,138 @@
 .body,
 html {
-  background-color: black;
-  color: white;
+    background-color: black;
+    color: white;
 }
 
 .header {
-  font-size: 84px;
-  font-weight: bolder;
-  padding-bottom: 20px;
+    font-size: 84px;
+    font-weight: bolder;
+    padding-bottom: 20px;
+    color: #fff;
+    text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 20px #ff0080, 0 0 30px #ff0080, 0 0 40px #ff0080, 0 0 55px #ff0080, 0 0 75px #ff0080;
 }
 
 .container1 {
-  height: 90vh;
-  justify-content: center;
-  justify-items: center;
-  align-content: center;
-  align-items: center;
+    height: 90vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .container2 {
-  text-align: center;
+    text-align: center;
 }
 
 .input {
-  width: 800px;
-  height: 60px;
-  border-radius: 15px;
-  border: 0;
-  font-size: 30px;
+    width: 800px;
+    height: 60px;
+    font-size: 30px;
+    padding: 15px;
+    outline: none;
+    border: double 0;
+    border-radius: 50px;
+    position: center;
+    box-sizing: border-box;
+    display: block;
+}
+
+.a1 {
+    background: linear-gradient(
+        330.28deg,
+        #ff6e1d 100%,
+        #ff6e1d 100%,
+        #ff6e1d 100%
+    );
+}
+
+.a1>input {
+    color: #caab98;
+}
+
+.a1>input::placeholder {
+    color: #ff6e1d;
+    opacity: 0.6;
+}
+
+.inp-border:focus-within {
+    background: linear-gradient(
+        330.28deg,
+        #2cfff2 0%,
+        #1e78ff 30.73%,
+        #ff54a6 55.73%,
+        #ff6e1d 79.17%,
+        #ff3e3e 100%
+    );
+}
+
+.inp-border:hover {
+    background: linear-gradient(
+        330.28deg,
+        #2cfff2 0%,
+        #1e78ff 30.73%,
+        #ff54a6 55.73%,
+        #ff6e1d 79.17%,
+        #ff3e3e 100%
+    );
 }
 
 .loginarea {
-  text-align: right;
+    text-align: right;
+}
+
+.btn {
+    --color: #00A97F;
+    --color2: rgb(10, 25, 30);
+    padding: 0.8em 1.75em;
+    background-color: transparent;
+    border-radius: 6px;
+    border: .3px solid var(--color);
+    transition: .5s;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    z-index: 1;
+    font-weight: 300;
+    font-size: 17px;
+    font-family: 'Roboto', 'Segoe UI', sans-serif;
+    text-transform: uppercase;
+    color: var(--color);
+}
+
+.btn::after,
+.btn::before {
+    content: '';
+    display: block;
+    height: 100%;
+    width: 100%;
+    transform: skew(90deg) translate(-50%, -50%);
+    position: absolute;
+    inset: 50%;
+    left: 25%;
+    z-index: -1;
+    transition: .5s ease-out;
+    background-color: var(--color);
+}
+
+.btn::before {
+    top: -50%;
+    left: -25%;
+    transform: skew(90deg) rotate(180deg) translate(-50%, -50%);
+}
+
+.btn:hover::before {
+    transform: skew(45deg) rotate(180deg) translate(-50%, -50%);
+}
+
+.btn:hover::after {
+    transform: skew(45deg) translate(-50%, -50%);
+}
+
+.btn:hover {
+    color: var(--color2);
+}
+
+.btn:active {
+    filter: brightness(.7);
+    transform: scale(.98);
 }

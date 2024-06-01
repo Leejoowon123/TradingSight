@@ -12,25 +12,30 @@
     <p>Stock Name = <%= stockName %></p>
     <p>Stock Code = <%= stockCode %></p>
 
+    <!-- 이미지를 보기 위한 버튼과 돌아가기 버튼 -->
+    <div class="button-container">
+        <button onclick="loadImage()" class="btn" type="button">
+            <strong>이미지보기 </strong>
+            <div id="container-stars">
+                <div id="stars"></div>
+            </div>
+
+            <div id="glow">
+                <div class="circle"></div>
+                <div class="circle"></div>
+            </div>
+        </button>
+
+        <!-- 돌아가기 버튼 -->
+        <form action="/" method="GET">
+            <button class="btn" type="submit"><strong>돌아가기</strong></button>
+        </form>
+    </div>
+
     <!-- 이미지를 표시할 영역 -->
     <div id="image-container">
         <p>이미지가 표시될 곳입니다.</p>
     </div>
-
-    <!-- 이미지를 보기 위한 버튼 -->
-    <button onclick="loadImage()" class="btn" type="button">
-        <strong>이미지보기 </strong>
-        <div id="container-stars">
-          <div id="stars"></div>
-        </div>
-      
-        <div id="glow">
-          <div class="circle"></div>
-          <div class="circle"></div>
-        </div>
-      </button>
-      
-
 
     <script>
         // 이미지를 로드하기 위한 함수

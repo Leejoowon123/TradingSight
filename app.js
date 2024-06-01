@@ -38,15 +38,6 @@ const corsOptions = {
   credentials: true              // 인증 정보를 포함할 경우 true로 설정
 };
 
-const sessionChecker = (req, res, next) => {
-  if (req.session.userId) {
-    // 세션에 userId가 있는 경우
-    res.locals.userId = req.session.userId;
-  }
-  next();
-};
-
-app.use(sessionChecker);
 
 // CORS 미들웨어를 라우터에 적용
 app.use(cors(corsOptions));

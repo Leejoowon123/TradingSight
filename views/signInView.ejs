@@ -5,22 +5,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>signIn</title>
+    <link rel="stylesheet" href="/public/stylesheets/sign.css">
 </head>
 
 <body>
-    <div>로그인 페이지</div>
-    <form action="/user/signIn/signInLogic" method="post">
-        <lable for="userId">ID</lable>
-        <div class="idarea">
-            <input type="text" class="userId" id="userId" name="userId">
-        </div>
-        <label for="userPassword">Password</label>
-        <div class="passwordarea">
-            <input type="password" class="userpassword" id="userPassword" name="userPassword">
-        </div>
-        <button type="submit">sign In</button>
-    </form>
-
+    <div class="container">
+        <div>로그인 페이지</div>
+        <form action="/user/signIn/signInLogic" method="post">
+            <div class="input-container">
+                <div class="input-content">
+                    <div class="input-dist">
+                        <div class="input-type">
+                            <input class="input-is userId" type="text" id="userId" name="userId" placeholder="ID">
+                            <input class="input-is userPassword" type="password" id="userPassword" name="userPassword"
+                                placeholder="Password">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button class="submit-button" type="submit">sign In</button>
+        </form>
+    </div>
 </body>
 
 </html>

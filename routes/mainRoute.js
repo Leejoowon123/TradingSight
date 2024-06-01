@@ -58,15 +58,33 @@ router.post('/user/signUp', async (req, res) => {
 router.post('/user/signUp/signUpLogic', async (req, res) => {
   const { userId, userPassword } = req.body;
 
-  try {
-    const user = await User.create({ userId, userPassword });
-    console.log(user + ' user created!');
-    res.redirect('/user/signIn');
-  } catch {
-    console.log('user create error');
-    res.status(500).send("Error creating user");
+  // 아이디 유효성 검사: 8자 이상, 한글과 영어 숫자만 허용
+  const userIdRegex = /^[가-힣a-zA-Z0-9]{8,}$/;
+  if (!userIdRegex.test(userId)) {
+    return res.status(400).send('아이디는 8자 이상이어야 하며, 한글과 영어 숫자만 사용 가능합니다.');
   }
-})
+
+  // 비밀번호 유효성 검사: 8자 이상
+  if (userPassword.length < 8) {
+    return res.status(400).send('비밀번호는 8자 이상이어야 합니다.');
+  }
+
+  const user = await User.findOne({ userId });
+
+  if (!user) {
+    try {
+      const newUser = await User.create({ userId, userPassword });
+      console.log(newUser + ' user created!');
+      res.redirect('/user/signIn');
+    } catch (error) {
+      console.error('user create error:', error);
+      res.status(500).send("Error creating user");
+    }
+  } else {
+    res.status(400).send('중복된 아이디');
+  }
+});
+
 
 router.get('/user/myPage', async (req, res) => {
   const userId = req.session.userId;
@@ -86,7 +104,7 @@ router.post('/user/myPage', async (req, res) => {
   res.redirect('/user/myPage');
 })
 
-router.post('/user/logut', async (req, res) => {
+router.post('/user/logout', async (req, res) => {
 
   const userId = req.session.userId;
 
@@ -103,6 +121,65 @@ router.post('/user/logut', async (req, res) => {
     res.redirect('/');
   }
 })
+
+router.post('/user/myPage/deleteUser', async (req, res) => {
+  const userId = req.session.userId;
+  console.log(userId + "delete방면");
+  if (userId) {
+    const deletedUser = await User.findOneAndDelete({ userId: userId });
+    console.log(deletedUser + "이 삭제되었습니다");
+    req.session.destroy();
+    res.redirect('/');
+  }
+  else {
+    res.status(500).send('delete Error' + error);
+  }
+})
+
+router.get('/user/myPage/updateMyPage', async (req, res) => {
+  userId = req.session.userId;
+  const user = await User.findOne({ userId });
+  res.render('updateMyPage', { userId: user.userId, userPassword: user.userPassword });
+
+})
+
+router.post('/user/myPage/updateUser', async (req, res) => {
+  res.redirect('/user/myPage/updateMyPage')
+})
+
+router.post('/user/myPage/updateNewPassword', async (req, res) => {
+  const userId = req.session.userId;
+  const newPassword = req.body.newPassword; // 새 비밀번호를 가져옴
+
+  // 비밀번호 조건 확인
+  if (newPassword.length < 8) {
+    return res.status(400).json({ success: false, message: '비밀번호는 최소 8자 이상이어야 합니다.' });
+  }
+
+  try {
+    if (userId) {
+      // 사용자 아이디로 데이터베이스에서 사용자를 찾아 비밀번호 업데이트
+      const result = await User.updateOne({ userId: userId }, { $set: { userPassword: newPassword } });
+      
+      if (result.nModified > 0) {
+        console.log('비밀번호 업데이트 완료');
+        res.json({ success: true });
+      } else {
+        console.log('비밀번호 업데이트 실패: 사용자 정보가 변경되지 않았습니다.');
+        res.status(500).json({ success: false, message: '비밀번호 업데이트 실패: 사용자 정보가 변경되지 않았습니다.' });
+      }
+    } else {
+      // 사용자 아이디가 없으면 오류 메시지를 반환
+      throw new Error('User ID not found');
+    }
+  } catch (error) {
+    console.error('Error updating password:', error);
+    res.status(500).json({ success: false, message: 'Error updating password', error: error.message });
+  }
+});
+
+
+
 
 //main에서 주식을 검색하면 세션에 주식 값과 코드를 넣음.
 router.post('/search', async (req, res) => {
@@ -170,7 +247,7 @@ router.get('/stockShow', async (req, res) => {
 
               // 저장할 파일 경로 설정
               const fileName = `${stockCode}.png`;
-              const dirPath = 'C:/workspace/TradingSight/stockImages'; //자신의 경로 변경
+              const dirPath = 'C:/workspace/TradingSight/stockImages';
               const filePath = path.join(dirPath, fileName);
 
               // 디렉토리 존재 여부 확인 및 생성
@@ -224,7 +301,7 @@ router.post('/stockShow/image', (req, res) => {
     const { stockCode } = decoded;  //토큰에 있는 stockCode, stockName에 접근할 수 있음. 
     console.log(stockCode);
     // 이미지 파일 경로 설정
-    const imagePath = `C:/workspace/TradingSight/stockImages${stockCode}.png`; //자신의 경로로 변경
+    const imagePath = `../stockImages/${stockCode}.png`;
     console.log(imagePath);
     // 이미지 파일을 클라이언트에게 전송
     res.sendFile(path.join(__dirname, imagePath));
