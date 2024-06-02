@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Favorite List</title>
+    <link rel="stylesheet" href="../public/stylesheets/userFavoriteStyles.css">
+</head>
+
+<body>
+    <div class="container1">
+        <label class="favoriteLabel">userId <%= userId %> 님의 관심종목</label>
+        <% if (favorites.length> 0) { %>
+            <ul>
+                <% favorites.forEach(favorite=> { %>
+                    <li>
+                        <%= favorite.stockName %> (<%= favorite.stockCode %>)
+                                <form action="/user/myPage/userFavorite/delete/<%= favorite._id %>" method="post">
+                                    <button type="submit">삭제</button>
+                                </form>
+                    </li>
+                    <% }) %>
+            </ul>
+            <% } else { %>
+                <p>
+                    <%= message %>
+                </p>
+                <% } %>
+    </div>
+
+
+</body>
+
+</html>

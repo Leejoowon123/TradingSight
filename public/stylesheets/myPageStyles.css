@@ -2,13 +2,15 @@
   background-color: bisque;
 }
 
-html, body {
+html,
+body {
   height: 100%;
   margin: 0;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: black; /* 검은색 배경 추가 */
+  background-color: black;
+  /* 검은색 배경 추가 */
 }
 
 .form {
@@ -30,11 +32,13 @@ html, body {
 }
 
 .text-inline {
-  display: inline; /* 인라인 요소로 변경 */
+  display: inline;
+  /* 인라인 요소로 변경 */
   color: rgb(0, 255, 200);
   font-size: 1.2em;
   margin: 0;
-  padding: 0 0.2em; /* 약간의 여백 추가 */
+  padding: 0 0.2em;
+  /* 약간의 여백 추가 */
 }
 
 .field {
