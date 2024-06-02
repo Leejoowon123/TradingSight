@@ -1,63 +1,79 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>StockShow</title>
     <link rel="stylesheet" href="public/stylesheets/stockShowView.css">
 </head>
+
 <body>
     <h1 class="neon">Stock Vision</h1>
 
-    <p>Stock Name = <%= stockName %></p>
-    <p>Stock Code = <%= stockCode %></p>
+    <% if (message) { %>
+        <script>
+            alert("<%= message %>");
+        </script>
+        <% } %>
 
-    <!-- 이미지를 보기 위한 버튼과 돌아가기 버튼 -->
-    <div class="button-container">
-        <button onclick="loadImage()" class="btn" type="button">
-            <strong>이미지보기 </strong>
-            <div id="container-stars">
-                <div id="stars"></div>
+            <p>Stock Name = <%= stockName %>
+            </p>
+            <p>Stock Code = <%= stockCode %>
+            </p>
+
+            <!-- 이미지를 보기 위한 버튼과 돌아가기 버튼 -->
+            <div class="button-container">
+                <button onclick="loadImage()" class="btn" type="button">
+                    <strong>이미지보기 </strong>
+                    <div id="container-stars">
+                        <div id="stars"></div>
+                    </div>
+
+                    <div id="glow">
+                        <div class="circle"></div>
+                        <div class="circle"></div>
+                    </div>
+                </button>
+
+                <!-- 돌아가기 버튼 -->
+                <form action="/" method="GET">
+                    <button class="btn" type="submit"><strong>돌아가기</strong></button>
+                </form>
             </div>
 
-            <div id="glow">
-                <div class="circle"></div>
-                <div class="circle"></div>
+            <!-- 이미지를 표시할 영역 -->
+            <div class="imagecontainer">
+                <div id="image-container">
+                    <p></p>
+                </div>
+                <form action='/user/favorite' method="post">
+                    <button type="submit" class="favoritebutton">관심주식에 추가</button>
+                </form>
             </div>
-        </button>
 
-        <!-- 돌아가기 버튼 -->
-        <form action="/" method="GET">
-            <button class="btn" type="submit"><strong>돌아가기</strong></button>
-        </form>
-    </div>
-
-    <!-- 이미지를 표시할 영역 -->
-    <div id="image-container">
-        <p>이미지가 표시될 곳입니다.</p>
-    </div>
-
-    <script>
-        // 이미지를 로드하기 위한 함수
-        function loadImage() {
-            // AJAX 요청
-            var xhr = new XMLHttpRequest();
-            xhr.open('POST', '/stockShow/image');
-            xhr.setRequestHeader('Content-Type', 'application/json');
-            xhr.responseType = 'blob'; // 이미지 데이터를 Blob 형식으로 받아옴
-            xhr.onload = function () {
-                if (xhr.status === 200) {
-                    // 성공적으로 이미지를 받았을 때 화면에 표시
-                    var imageContainer = document.getElementById('image-container');
-                    var imageUrl = URL.createObjectURL(xhr.response);
-                    imageContainer.innerHTML = `<img src="${imageUrl}" alt="주식 예측 이미지">`;
-                } else {
-                    // 에러 처리
-                    console.error('이미지를 받아오는 데 실패했습니다.');
+            <script>
+                // 이미지를 로드하기 위한 함수
+                function loadImage() {
+                    // AJAX 요청
+                    var xhr = new XMLHttpRequest();
+                    xhr.open('POST', '/stockShow/image');
+                    xhr.setRequestHeader('Content-Type', 'application/json');
+                    xhr.responseType = 'blob'; // 이미지 데이터를 Blob 형식으로 받아옴
+                    xhr.onload = function () {
+                        if (xhr.status === 200) {
+                            // 성공적으로 이미지를 받았을 때 화면에 표시
+                            var imageContainer = document.getElementById('image-container');
+                            var imageUrl = URL.createObjectURL(xhr.response);
+                            imageContainer.innerHTML = `<img src="${imageUrl}" alt="주식 예측 이미지">`;
+                        } else {
+                            // 에러 처리
+                            console.error('이미지를 받아오는 데 실패했습니다.');
+                        }
+                    };
+                    xhr.send();
                 }
-            };
-            xhr.send();
-        }
-    </script>
+            </script>
 </body>
+
 </html>

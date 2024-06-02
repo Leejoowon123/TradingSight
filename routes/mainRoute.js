@@ -6,12 +6,14 @@ var express = require('express');
 var router = express.Router();
 const Stock = require('../models/stockNameCodeModel');
 const User = require('../models/userIdPasswordModel');
+const Favorite = require('../models/favoriteStockCodeNameModel');
 const jwt = require('jsonwebtoken'); //jwt토큰
 const http = require('http');
 const { ConnectionStates } = require('mongoose');
 const path = require('path'); // path 모듈 추가
 const fs = require('fs'); // fs 모듈 추가
 const { session } = require('passport');
+const favorite = require('../models/favoriteStockCodeNameModel');
 
 //get main화면을 랜더링
 router.get('/', async (req, res) => {
@@ -90,11 +92,9 @@ router.post('/user/signUp/signUpLogic', async (req, res) => {
 
 router.get('/user/myPage', async (req, res) => {
   const userId = req.session.userId;
-
   const user = await User.findOne({ userId });
-
   if (userId) {
-    console.log(user.userId);
+    console.log(user.userId + '마이페이지 로그인정보');
     res.render('myPageView', { userId: user.userId });
   }
   else {
@@ -142,11 +142,11 @@ router.get('/user/myPage/updateMyPage', async (req, res) => {
   userId = req.session.userId;
   const user = await User.findOne({ userId });
   res.render('updateMyPage', { userId: user.userId, userPassword: user.userPassword });
-
 })
 
 router.post('/user/myPage/updateUser', async (req, res) => {
   res.redirect('/user/myPage/updateMyPage')
+  console.log('회원비밀번호변경으로이동');
 })
 
 router.post('/user/myPage/updateNewPassword', async (req, res) => {
@@ -180,6 +180,66 @@ router.post('/user/myPage/updateNewPassword', async (req, res) => {
   }
 });
 
+router.post('/user/favorite', async (req, res) => {
+  const token = req.session.token;
+  const decoded = jwt.verify(token, '1234');
+  const { stockName, stockCode } = decoded;
+  const userId = req.session.userId;
+  console.log(stockName + 'favorite');
+  console.log(stockCode);
+  console.log(userId);
+
+  if (token) {
+    if (userId) {
+      const userFavorite = await Favorite.findOne({ userId, stockName });
+      console.log(userFavorite);
+      if (!userFavorite) {
+        await Favorite.create({ userId, stockName, stockCode });
+        console.log('create favorite');
+        res.redirect('/stockShow?message=관심목록에 추가되었습니다');
+      } else {
+        res.redirect('/stockShow?message=이미 관심목록에 추가된 주식입니다');
+      }
+    } else {
+      res.redirect('/user/signIn?message=로그인 후 이용해주세요');
+    }
+  }
+});
+
+router.get('/user/myPage/userFavorite', async (req, res) => {
+  const userId = req.session.userId;
+  const userFavorite = await Favorite.find({ userId });
+  console.log(userFavorite);
+
+  if (userId) {
+    try {
+      if (userFavorite) {
+        res.render('userFavoriteView', { userId: userId, favorites: userFavorite, message: '' });
+      } else {
+        res.render('userFavoriteView', { userId: userId, favorites: [], message: '관심종목이 없습니다.' });
+      }
+    } catch (error) {
+      res.status(500).send('Internal Server Error')
+    }
+  } else {
+    res.redirect('/user/signIn?message=로그인 후 이용해주세요');
+  }
+});
+
+router.post('/user/myPage/userFavorite/delete/:id', async (req, res) => {
+  const favoriteId = req.params.id;
+  console.log(favoriteId + '삭제기능에서');
+  try {
+    await Favorite.findByIdAndDelete(favoriteId);
+    res.redirect('/user/myPage/userFavorite');
+  } catch {
+    res.status(500).send('Delete Error');
+  }
+})
+
+router.post('/user/myPage/favorite', async (req, res) => {
+  res.redirect('/user/myPage/userFavorite');
+})
 
 //main에서 주식을 검색하면 세션에 주식 값과 코드를 넣음.
 router.post('/search', async (req, res) => {
@@ -222,6 +282,7 @@ router.get('/stockShow', async (req, res) => {
   console.log('stockShow 페이지 랜더링');
 
   const token = req.session.token;
+  const message = req.query.message || '';
 
   if (token) {
     try {
@@ -272,7 +333,7 @@ router.get('/stockShow', async (req, res) => {
 
                 // 이미지 파일 경로 반환
                 const imageUrl = `/Users/Zen1/leeseongjun/nodejsStudy/TradingSight/stockImages${fileName}`;
-                res.render('stockShowView', { stockCode, stockName, imageUrl }); //ejs로 값을 넘기기
+                res.render('stockShowView', { stockCode, stockName, imageUrl, message }); //ejs로 값을 넘기기
               });
             } catch (error) {
               console.error(error);
@@ -315,8 +376,6 @@ router.post('/stockShow/image', (req, res) => {
     res.sendFile(path.join(__dirname, imagePath));
   }
 });
-
-
 
 //라우터 외부 전송
 module.exports = router;
