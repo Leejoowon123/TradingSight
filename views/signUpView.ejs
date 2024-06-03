@@ -9,23 +9,29 @@
 </head>
 
 <body>
-    <div class="container">
-        <div>회원가입 페이지</div>
-        <form action="/user/signUp/signUpLogic" method="post">
-            <div class="input-container">
-                <div class="input-content">
-                    <div class="input-dist">
-                        <div class="input-type">
-                            <input class="input-is userId" type="text" id="userId" name="userId" placeholder="ID">
-                            <input class="input-is userPassword" type="password" id="userPassword" name="userPassword"
-                                placeholder="Password">
+    <% if (message) { %>
+        <script>
+            alert('<%= message %>'); // 서버에서 전달된 메시지를 경고창으로 표시
+        </script>
+        <% } %>
+            <div class="container">
+                <div>회원가입 페이지</div>
+                <form action="/user/signUp/signUpLogic" method="post">
+                    <div class="input-container">
+                        <div class="input-content">
+                            <div class="input-dist">
+                                <div class="input-type">
+                                    <input class="input-is userId" type="text" id="userId" name="userId"
+                                        placeholder="ID">
+                                    <input class="input-is userPassword" type="password" id="userPassword"
+                                        name="userPassword" placeholder="Password">
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
+                    <button class="submit-button" type="submit">회원가입</button>
+                </form>
             </div>
-            <button class="submit-button" type="submit">회원가입</button>
-        </form>
-    </div>
 </body>
 
 </html>

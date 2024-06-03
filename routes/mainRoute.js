@@ -17,8 +17,9 @@ const favorite = require('../models/favoriteStockCodeNameModel');
 
 //get main화면을 랜더링
 router.get('/', async (req, res) => {
+  const message = req.query.message || '';
   const loggedIn = req.session.userId ? true : false;
-  res.render('mainView', { loggedIn })
+  res.render('mainView', { loggedIn, message })
 })
 
 router.get('/user/signIn', (req, res) => {
@@ -39,7 +40,7 @@ router.post('/user/signIn/signInLogic', async (req, res) => {
     console.log(user + '로그인 유저 정보');
 
     if (!user) {
-      res.send("잘못된 사용자 정보");
+      res.redirect('/user/signIn?message=로그인 정보를 확인해 주세요.')
     }
     else {
       req.session.userId = user.userId;
@@ -52,7 +53,8 @@ router.post('/user/signIn/signInLogic', async (req, res) => {
 })
 
 router.get('/user/signUp', async (req, res) => {
-  res.render('signUpView');
+  const message = req.query.message || ''; // message 쿼리 파라미터를 가져오고, 값이 없는 경우 빈 문자열을 사용합니다.
+  res.render('signUpView', { message: message });
 })
 
 router.post('/user/signUp', async (req, res) => {
@@ -61,41 +63,38 @@ router.post('/user/signUp', async (req, res) => {
 
 router.post('/user/signUp/signUpLogic', async (req, res) => {
   const { userId, userPassword } = req.body;
-
   // 아이디 유효성 검사: 8자 이상, 한글과 영어 숫자만 허용
   const userIdRegex = /^[가-힣a-zA-Z0-9]{8,}$/;
   if (!userIdRegex.test(userId)) {
-    return res.status(400).send('아이디는 8자 이상이어야 하며, 한글과 영어 숫자만 사용 가능합니다.');
+    return res.redirect('/user/signUp?message=아이디는 8자 이상이어야 하며, 한글과 영어 숫자만 사용 가능합니다.');
   }
-
   // 비밀번호 유효성 검사: 8자 이상
   if (userPassword.length < 8) {
-    return res.status(400).send('비밀번호는 8자 이상이어야 합니다.');
+    return res.redirect('/user/signUp?message=비밀번호는 8자 이상이어야 하며, 한글과 영어 숫자만 사용 가능합니다.');
   }
-
   const user = await User.findOne({ userId });
-
   if (!user) {
     try {
       const newUser = await User.create({ userId, userPassword });
       console.log(newUser + ' user created!');
-      res.redirect('/user/signIn');
+      return res.redirect('/user/signIn?message=회원가입 후 로그인해 주세요');
     } catch (error) {
       console.error('user create error:', error);
-      res.status(500).send("Error creating user");
+      return res.status(500).send("Error creating user");
     }
   } else {
-    res.status(400).send('중복된 아이디');
+    return res.status(400).send('중복된 아이디');
   }
 });
 
 
 router.get('/user/myPage', async (req, res) => {
+  const message = req.query.message || '';
   const userId = req.session.userId;
   const user = await User.findOne({ userId });
   if (userId) {
     console.log(user.userId + '마이페이지 로그인정보');
-    res.render('myPageView', { userId: user.userId });
+    res.render('myPageView', { userId: user.userId, message });
   }
   else {
     res.redirect('/user/signIn')
@@ -131,7 +130,7 @@ router.post('/user/myPage/deleteUser', async (req, res) => {
     const deletedUser = await User.findOneAndDelete({ userId: userId });
     console.log(deletedUser + "이 삭제되었습니다");
     req.session.destroy();
-    res.redirect('/');
+    res.redirect('/?message=회원 탈퇴되었습니다.');
   }
   else {
     res.status(500).send('delete Error' + error);
@@ -139,9 +138,11 @@ router.post('/user/myPage/deleteUser', async (req, res) => {
 })
 
 router.get('/user/myPage/updateMyPage', async (req, res) => {
-  userId = req.session.userId;
+  const message = req.query.message || '';
+  console.log(message);
+  const userId = req.session.userId;
   const user = await User.findOne({ userId });
-  res.render('updateMyPage', { userId: user.userId, userPassword: user.userPassword });
+  res.render('updateMyPage', { userId: user.userId, userPassword: user.userPassword, message });
 })
 
 router.post('/user/myPage/updateUser', async (req, res) => {
@@ -151,25 +152,28 @@ router.post('/user/myPage/updateUser', async (req, res) => {
 
 router.post('/user/myPage/updateNewPassword', async (req, res) => {
   const userId = req.session.userId;
-  const newPassword = req.body.newPassword; // 새 비밀번호를 가져옴
+  const newPassword = req.body.userPassword; // 새 비밀번호를 가져옴
+  console.log(userId);
+  console.log(newPassword);
 
-  // 비밀번호 조건 확인
-  if (newPassword.length < 8) {
-    return res.status(400).json({ success: false, message: '비밀번호는 최소 8자 이상이어야 합니다.' });
+  // const userIdRegex = /^[가-힣a-zA-Z0-9]{8,}$/;
+
+  // 정의되어 있는지 확인
+  if (!newPassword) {
+    res.redirect('/user/myPage/updateMyPage?message=변경할 비밀번호를 입력해주세요');
+    return; // 이후 코드 실행을 막기 위해 리턴 추가
+  }
+
+  if (newPassword.length < 8 || !/^[가-힣a-zA-Z0-9]{8,}$/.test(newPassword)) {
+    res.redirect('/user/myPage/updateMyPage?message=비밀번호는 8자 이상이어야 하며, 한글, 영어 대소문자, 숫자로만 구성되어야 합니다.');
+    return;
   }
 
   try {
     if (userId) {
       // 사용자 아이디로 데이터베이스에서 사용자를 찾아 비밀번호 업데이트
       const result = await User.updateOne({ userId: userId }, { $set: { userPassword: newPassword } });
-
-      if (result.nModified > 0) {
-        console.log('비밀번호 업데이트 완료');
-        res.json({ success: true });
-      } else {
-        console.log('비밀번호 업데이트 실패: 사용자 정보가 변경되지 않았습니다.');
-        res.status(500).json({ success: false, message: '비밀번호 업데이트 실패: 사용자 정보가 변경되지 않았습니다.' });
-      }
+      res.redirect('/user/myPage?message=비밀번호가 업데이트 되었습니다.');
     } else {
       // 사용자 아이디가 없으면 오류 메시지를 반환
       throw new Error('User ID not found');
@@ -263,7 +267,7 @@ router.post('/search', async (req, res) => {
 
         res.redirect('/stockShow');
       } else {
-        res.status(404).json({ message: 'Stock not found' });
+        res.redirect('/?message=검색한 주식이 없습니다.')
       }
     } catch (err) {
       console.error(err);

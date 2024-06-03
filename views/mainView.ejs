@@ -9,61 +9,66 @@
 </head>
 
 <body>
-    <% if (loggedIn) { %>
-    <form action="/user/myPage" method="post">
-        <div class="loginarea">
-            <button type="submit" class="btn">My page</button>
-        </div>
-    </form>
-    <form action="/user/logout" method="post">
-        <div class="loginarea">
-            <button type="submit" class="btn">Logout</button>
-        </div>
-    </form>
-    <% } else { %>
-    <!-- 로그인이 되어있지 않을 때 보여질 버튼 -->
-    <form action="/user/signIn" method="post">
-        <div class="loginarea">
-            <button type="submit" class="btn">Sign In</button>
-        </div>
-    </form>
-    <form action="/user/signUp" method="post">
-        <div class="loginarea">
-            <button type="submit" class="btn">Sign Up</button>
+    <% if (message) { %>
+        <script>
+            alert('<%= message %>'); // 서버에서 전달된 메시지를 경고창으로 표시
+        </script>
+        <% } %>
+            <% if (loggedIn) { %>
+                <form action="/user/myPage" method="post">
+                    <div class="loginarea">
+                        <button type="submit" class="btn">My page</button>
+                    </div>
+                </form>
+                <form action="/user/logout" method="post">
+                    <div class="loginarea">
+                        <button type="submit" class="btn">Logout</button>
+                    </div>
+                </form>
+                <% } else { %>
+                    <!-- 로그인이 되어있지 않을 때 보여질 버튼 -->
+                    <form action="/user/signIn" method="post">
+                        <div class="loginarea">
+                            <button type="submit" class="btn">Sign In</button>
+                        </div>
+                    </form>
+                    <form action="/user/signUp" method="post">
+                        <div class="loginarea">
+                            <button type="submit" class="btn">Sign Up</button>
 
-        </div>
-    </form>
-    <% } %>
-    <div class="container1">
-        <div class="container2">
+                        </div>
+                    </form>
+                    <% } %>
+                        <div class="container1">
+                            <div class="container2">
 
-            <div class="header" id="header">Insert your Stock</div>
-            <form action="/search" method="post" class="center">
-                <input class="input inp-border a1" type="text" id="stock_name" name="stock_name" required
-                    placeholder="stock">
-            </form>
-        </div>
-    </div>
+                                <div class="header" id="header">Insert your Stock</div>
+                                <form action="/search" method="post" class="center">
+                                    <input class="input inp-border a1" type="text" id="stock_name" name="stock_name"
+                                        required placeholder="stock">
+                                </form>
+                            </div>
+                        </div>
 
-    <script>
-        // 텍스트를 한 글자씩 나타내는 함수
-        function typeWriter(text, i, id) {
-            if (i < text.length) {
-                document.getElementById(id).innerHTML += text.charAt(i);
-                i++;
-                setTimeout(function () {
-                    typeWriter(text, i, id);
-                }, 100); // 0.1초 간격으로 한 글자씩 나타나도록 설정
-            }
-        }
-    
-        // 페이지 로드 시 효과 발동
-        window.onload = function () {
-            var text = document.getElementById('header').innerHTML; // 원본 텍스트 가져오기
-            document.getElementById('header').innerHTML = ''; // 기존 텍스트 초기화
-            typeWriter(text, 0, 'header'); // 타이핑 효과 함수 호출
-        };
-    </script>
+                        <script>
+                            // 텍스트를 한 글자씩 나타내는 함수
+                            function typeWriter(text, i, id) {
+                                if (i < text.length) {
+                                    document.getElementById(id).innerHTML += text.charAt(i);
+                                    i++;
+                                    setTimeout(function () {
+                                        typeWriter(text, i, id);
+                                    }, 100); // 0.1초 간격으로 한 글자씩 나타나도록 설정
+                                }
+                            }
+
+                            // 페이지 로드 시 효과 발동
+                            window.onload = function () {
+                                var text = document.getElementById('header').innerHTML; // 원본 텍스트 가져오기
+                                document.getElementById('header').innerHTML = ''; // 기존 텍스트 초기화
+                                typeWriter(text, 0, 'header'); // 타이핑 효과 함수 호출
+                            };
+                        </script>
 </body>
 
 </html>
