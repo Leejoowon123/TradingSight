@@ -77,7 +77,7 @@ router.post('/user/signUp/signUpLogic', async (req, res) => {
     try {
       const newUser = await User.create({ userId, userPassword });
       console.log(newUser + ' user created!');
-      return res.redirect('/user/signIn');
+      return res.redirect('/user/signIn?message=회원가입 후 로그인해 주세요');
     } catch (error) {
       console.error('user create error:', error);
       return res.status(500).send("Error creating user");
@@ -130,7 +130,7 @@ router.post('/user/myPage/deleteUser', async (req, res) => {
     const deletedUser = await User.findOneAndDelete({ userId: userId });
     console.log(deletedUser + "이 삭제되었습니다");
     req.session.destroy();
-    res.redirect('/');
+    res.redirect('/?message=회원 탈퇴되었습니다.');
   }
   else {
     res.status(500).send('delete Error' + error);
@@ -156,16 +156,17 @@ router.post('/user/myPage/updateNewPassword', async (req, res) => {
   console.log(userId);
   console.log(newPassword);
 
+  // const userIdRegex = /^[가-힣a-zA-Z0-9]{8,}$/;
+
   // 정의되어 있는지 확인
   if (!newPassword) {
     res.redirect('/user/myPage/updateMyPage?message=변경할 비밀번호를 입력해주세요');
     return; // 이후 코드 실행을 막기 위해 리턴 추가
   }
 
-  // 비밀번호 조건 확인
-  if (newPassword.length < 8) {
-    res.redirect('/user/myPage/updateMyPage?message=비밀번호는 8자 이상 입력해주세요');
-    return; // 이후 코드 실행을 막기 위해 리턴 추가
+  if (newPassword.length < 8 || !/^[가-힣a-zA-Z0-9]{8,}$/.test(newPassword)) {
+    res.redirect('/user/myPage/updateMyPage?message=비밀번호는 8자 이상이어야 하며, 한글, 영어 대소문자, 숫자로만 구성되어야 합니다.');
+    return;
   }
 
   try {
