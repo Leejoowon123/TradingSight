@@ -40,7 +40,7 @@ router.post('/user/signIn/signInLogic', async (req, res) => {
     console.log(user + '로그인 유저 정보');
 
     if (!user) {
-      res.send("잘못된 사용자 정보");
+      res.redirect('/user/signIn?message=로그인 정보를 확인해 주세요.')
     }
     else {
       req.session.userId = user.userId;
@@ -53,7 +53,8 @@ router.post('/user/signIn/signInLogic', async (req, res) => {
 })
 
 router.get('/user/signUp', async (req, res) => {
-  res.render('signUpView');
+  const message = req.query.message || ''; // message 쿼리 파라미터를 가져오고, 값이 없는 경우 빈 문자열을 사용합니다.
+  res.render('signUpView', { message: message });
 })
 
 router.post('/user/signUp', async (req, res) => {
@@ -62,33 +63,30 @@ router.post('/user/signUp', async (req, res) => {
 
 router.post('/user/signUp/signUpLogic', async (req, res) => {
   const { userId, userPassword } = req.body;
-
   // 아이디 유효성 검사: 8자 이상, 한글과 영어 숫자만 허용
   const userIdRegex = /^[가-힣a-zA-Z0-9]{8,}$/;
   if (!userIdRegex.test(userId)) {
-    return res.status(400).send('아이디는 8자 이상이어야 하며, 한글과 영어 숫자만 사용 가능합니다.');
+    return res.redirect('/user/signUp?message=아이디는 8자 이상이어야 하며, 한글과 영어 숫자만 사용 가능합니다.');
   }
-
   // 비밀번호 유효성 검사: 8자 이상
   if (userPassword.length < 8) {
-    return res.status(400).send('비밀번호는 8자 이상이어야 합니다.');
+    return res.redirect('/user/signUp?message=비밀번호는 8자 이상이어야 하며, 한글과 영어 숫자만 사용 가능합니다.');
   }
-
   const user = await User.findOne({ userId });
-
   if (!user) {
     try {
       const newUser = await User.create({ userId, userPassword });
       console.log(newUser + ' user created!');
-      res.redirect('/user/signIn');
+      return res.redirect('/user/signIn');
     } catch (error) {
       console.error('user create error:', error);
-      res.status(500).send("Error creating user");
+      return res.status(500).send("Error creating user");
     }
   } else {
-    res.status(400).send('중복된 아이디');
+    return res.status(400).send('중복된 아이디');
   }
 });
+
 
 router.get('/user/myPage', async (req, res) => {
   const message = req.query.message || '';
