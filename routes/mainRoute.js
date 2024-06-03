@@ -17,8 +17,9 @@ const favorite = require('../models/favoriteStockCodeNameModel');
 
 //get main화면을 랜더링
 router.get('/', async (req, res) => {
+  const message = req.query.message || '';
   const loggedIn = req.session.userId ? true : false;
-  res.render('mainView', { loggedIn })
+  res.render('mainView', { loggedIn, message })
 })
 
 router.get('/user/signIn', (req, res) => {
@@ -89,13 +90,13 @@ router.post('/user/signUp/signUpLogic', async (req, res) => {
   }
 });
 
-
 router.get('/user/myPage', async (req, res) => {
+  const message = req.query.message || '';
   const userId = req.session.userId;
   const user = await User.findOne({ userId });
   if (userId) {
     console.log(user.userId + '마이페이지 로그인정보');
-    res.render('myPageView', { userId: user.userId });
+    res.render('myPageView', { userId: user.userId, message });
   }
   else {
     res.redirect('/user/signIn')
@@ -139,9 +140,11 @@ router.post('/user/myPage/deleteUser', async (req, res) => {
 })
 
 router.get('/user/myPage/updateMyPage', async (req, res) => {
-  userId = req.session.userId;
+  const message = req.query.message || '';
+  console.log(message);
+  const userId = req.session.userId;
   const user = await User.findOne({ userId });
-  res.render('updateMyPage', { userId: user.userId, userPassword: user.userPassword });
+  res.render('updateMyPage', { userId: user.userId, userPassword: user.userPassword, message });
 })
 
 router.post('/user/myPage/updateUser', async (req, res) => {
@@ -151,25 +154,27 @@ router.post('/user/myPage/updateUser', async (req, res) => {
 
 router.post('/user/myPage/updateNewPassword', async (req, res) => {
   const userId = req.session.userId;
-  const newPassword = req.body.newPassword; // 새 비밀번호를 가져옴
+  const newPassword = req.body.userPassword; // 새 비밀번호를 가져옴
+  console.log(userId);
+  console.log(newPassword);
+
+  // 정의되어 있는지 확인
+  if (!newPassword) {
+    res.redirect('/user/myPage/updateMyPage?message=변경할 비밀번호를 입력해주세요');
+    return; // 이후 코드 실행을 막기 위해 리턴 추가
+  }
 
   // 비밀번호 조건 확인
   if (newPassword.length < 8) {
-    return res.status(400).json({ success: false, message: '비밀번호는 최소 8자 이상이어야 합니다.' });
+    res.redirect('/user/myPage/updateMyPage?message=비밀번호는 8자 이상 입력해주세요');
+    return; // 이후 코드 실행을 막기 위해 리턴 추가
   }
 
   try {
     if (userId) {
       // 사용자 아이디로 데이터베이스에서 사용자를 찾아 비밀번호 업데이트
       const result = await User.updateOne({ userId: userId }, { $set: { userPassword: newPassword } });
-
-      if (result.nModified > 0) {
-        console.log('비밀번호 업데이트 완료');
-        res.json({ success: true });
-      } else {
-        console.log('비밀번호 업데이트 실패: 사용자 정보가 변경되지 않았습니다.');
-        res.status(500).json({ success: false, message: '비밀번호 업데이트 실패: 사용자 정보가 변경되지 않았습니다.' });
-      }
+      res.redirect('/user/myPage?message=비밀번호가 업데이트 되었습니다.');
     } else {
       // 사용자 아이디가 없으면 오류 메시지를 반환
       throw new Error('User ID not found');
@@ -263,7 +268,7 @@ router.post('/search', async (req, res) => {
 
         res.redirect('/stockShow');
       } else {
-        res.status(404).json({ message: 'Stock not found' });
+        res.redirect('/?message=검색한 주식이 없습니다.')
       }
     } catch (err) {
       console.error(err);
