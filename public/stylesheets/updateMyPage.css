@@ -1,0 +1,182 @@
+body {
+    display: flex; /* flexbox 사용 */
+    flex-direction: column; /* 요소들을 세로 방향으로 배열 */
+    align-items: center; /* 가로 중앙 정렬 */
+    justify-content: center; /* 세로 중앙 정렬 */
+    min-height: 100vh; /* 최소 높이를 100% viewport 높이로 설정하여 페이지 전체를 채움 */
+    background-color: black;
+}
+/*text*/
+p {
+    font-size: 20px;
+    /* line-height: calc(20px + 20vh); */
+    text-shadow: 0 0 5px #00ffff, 0 0 15px #00ffff, 0 0 20px #00ffff, 0 0 40px #00ffff, 0 0 60px #fbff00, 0 0 10px #00ffff, 0 0 98px #fbff00;
+      color: #fff6a9;
+    font-family: "Sacramento", cursive;
+    text-align: center;
+    animation: blink 6s infinite;
+    -webkit-animation: blink 8s infinite;
+  }
+   
+  @-webkit-keyframes blink {
+    20%,
+    24%,
+    55% {
+      color: #111;
+      text-shadow: none;
+    }
+  
+    0%,
+    19%,
+    21%,
+    23%,
+    25%,
+    54%,
+    56%,
+    100% {
+    text-shadow: 0 0 5px #00ffff, 0 0 15px #00ffff, 0 0 20px #00ffff, 0 0 40px #00ffff, 0 0 60px #fbff00, 0 0 10px #00ffff, 0 0 98px #fbff00;
+      color: #fff6a9;
+    }
+  }
+  
+  @keyframes blink {
+    20%,
+    24%,
+    55% {
+      color: #111;
+      text-shadow: none;
+    }
+  
+    0%,
+    19%,
+    21%,
+    23%,
+    25%,
+    54%,
+    56%,
+    100% {
+    text-shadow: 0 0 5px #00ffff, 0 0 15px #00ffff, 0 0 20px #00ffff, 0 0 40px #00ffff, 0 0 60px #fbff00, 0 0 10px #00ffff, 0 0 98px #fbff00;
+      color: #fff6a9;
+    }
+  }
+/*text*/
+
+
+/*입력창*/
+.box-input {
+    position: relative;
+  }
+  
+  .border {
+    background-image: linear-gradient(to right bottom, #e300ff, #ff00aa, #ff5956, #ffb900, #fffe00);
+    box-shadow: -25px -10px 30px -5px rgba(225, 0, 255, 0.5),
+      25px -10px 30px -5px rgba(255, 0, 212, 0.5),
+      25px 10px 30px -5px rgba(255, 174, 0, 0.5),
+      -25px 10px 30px -5px rgba(255, 230, 0, 0.5);
+    padding: 4px;
+  }
+  
+  .input {
+    background-color: #212121;
+    max-width: 250px;
+    height: 40px;
+    padding: 0 19px 0 10px;
+    font-size: 1.1em;
+    position: relative;
+    border: none;
+    color: white;
+    outline: 0;
+    overflow: hidden;
+  }
+  
+  .box-input::after,
+  .box-input::before {
+    content: "";
+    width: 130px;
+    height: 30px;
+    position: absolute;
+    z-index: -1;
+  }
+  
+  .box-input::after {
+    bottom: 0;
+    right: 0;
+  }
+  
+  .box-input::before {
+    top: 0;
+    left: 0;
+  }
+  
+  .input::placeholder {
+    transition: all 0.5s ease-in, transform 0.2s ease-in 0.6s;
+  }
+  
+  .input:focus::placeholder {
+    padding-left: 165px;
+    transform: translateY(-50px);
+  }
+  
+
+
+/*입력창*/
+
+
+
+/*버튼*/
+.button {
+    position: relative;
+    width: 120px;
+    height: 40px;
+    background-color: #000;
+    display: flex;
+    align-items: center;
+    color: white;
+    flex-direction: column;
+    justify-content: center;
+    border: none;
+    padding: 12px;
+    gap: 12px;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  
+  .button::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    left: -4px;
+    top: -1px;
+    margin: auto;
+    width: 128px;
+    height: 48px;
+    border-radius: 10px;
+    background: linear-gradient(-45deg, #e81cff 0%, #40c9ff 100% );
+    z-index: -10;
+    pointer-events: none;
+    transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+  
+  .button::after {
+    content: "";
+    z-index: -1;
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(-45deg, #fc00ff 0%, #00dbde 100% );
+    transform: translate3d(0, 0, 0) scale(0.95);
+    filter: blur(20px);
+  }
+  
+  .button:hover::after {
+    filter: blur(30px);
+  }
+  
+  .button:hover::before {
+    transform: rotate(-180deg);
+  }
+  
+  .button:active::before {
+    scale: 0.7;
+  }
+
+/*버튼*/  

@@ -110,11 +110,15 @@ form {
 
 /*button*/
 button {
+
+    border-radius: 5rem;
+    font-size: 1.2rem;
+    line-height: 1em;
     position: relative;
-    padding: 10px 20px;
-    border-radius: 7px;
-    border: 1px solid (61, 106, 255);
-    font-size: 20px;
+    align-items: center;
+    text-align: center;
+    padding: 1rem 5.2rem 1rem 5.2rem;
+    border: 5px solid (61, 106, 255);
     text-transform: uppercase;
     font-weight: 600;
     letter-spacing: 2px;
@@ -187,6 +191,7 @@ button {
 /*backbutton*/
 .back-button {
     position: relative;
+    align-items: center;
   }
   
   .back-button button {

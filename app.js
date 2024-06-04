@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const mainRouter = require('./routes/mainRoute');
 const session = require('express-session');
 const cors = require('cors');
-
+  
 const app = express();
 
 // MongoDB 연결 설정
