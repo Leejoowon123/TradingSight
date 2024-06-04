@@ -336,7 +336,7 @@ router.get('/stockShow', async (req, res) => {
                 }
 
                 // 이미지 파일 경로 반환
-                const imageUrl = `/Users/swFinal/TradingSight/stockImages${fileName}`;
+                const imageUrl = `/Users/swFinal/TradingSight/stockImages/${fileName}`;
                 res.render('stockShowView', { stockCode, stockName, imageUrl, message }); //ejs로 값을 넘기기
               });
             } catch (error) {
