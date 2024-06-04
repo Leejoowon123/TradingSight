@@ -1,0 +1,7 @@
+{
+    "watch": ["bin","routes", "views", "models","public"],
+    "ignore": ["node_modules", "pythonfiles"],
+    "ext": "js,json,ejs",
+    "exec": "node bin/www"
+  }
+  
