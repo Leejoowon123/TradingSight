@@ -382,20 +382,21 @@ router.post('/stockShow/image', (req, res) => {
 });
 
 router.post('/userFavorite/image', async (req, res) => {
-  const userId = req.session.userId; // 세션에서 아이디 가져오기 
-  const userFavorite = await Favorite.find({ userId }); // userFavorite에서 아이디 찾아오기 
-  console.log(userFavorite);
-  const token = req.session.token;
+  const userId = req.session.userId; // 세션에서 아이디 가져오기
+  const userFavorites = await Favorite.find({ userId }); // userFavorite에서 아이디 찾아오기
+  console.log(userFavorites);
+  
+  if (userId && userFavorites.length > 0) {
+    // stockCode들에 대한 이미지 경로 배열 생성
+    const imagePaths = userFavorites.map(favorite => {
+      const imagePath = `../stockImages/${favorite.stockCode}.png`;
+      return path.join(__dirname, imagePath);
+    });
 
-  if (token) {
-    const decoded = jwt.verify(token, '1234'); //토큰에 인증 한 후
-    const { stockCode } = decoded;  //토큰에 있는 stockCode, stockName에 접근할 수 있음. 
-    console.log(stockCode);
-    // 이미지 파일 경로 설정
-    const imagePath = `../stockImages/${stockCode}.png`;
-    console.log(imagePath);
-    // 이미지 파일을 클라이언트에게 전송
-    res.sendFile(path.join(__dirname, imagePath));
+    // 이미지 경로 배열을 클라이언트에게 전송
+    res.json(imagePaths);
+  } else {
+    res.status(404).send('사용자 즐겨찾기 정보가 없습니다.');
   }
 });
 
