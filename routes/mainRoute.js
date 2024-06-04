@@ -22,6 +22,11 @@ router.get('/', async (req, res) => {
   res.render('mainView', { loggedIn, message })
 })
 
+router.post('/aboutUs', async (req, res) => {
+  res.render('aboutUs');
+})
+
+
 router.get('/user/signIn', (req, res) => {
   const message = req.query.message || ''; // message 쿼리 파라미터를 가져오고, 값이 없는 경우 빈 문자열을 사용합니다.
   res.render('signInView', { message }); // 렌더링 시 message 변수를 전달합니다.
