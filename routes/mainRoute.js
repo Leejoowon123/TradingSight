@@ -211,16 +211,23 @@ router.post('/user/favorite', async (req, res) => {
 });
 
 router.get('/user/myPage/userFavorite', async (req, res) => {
-  const userId = req.session.userId;
-  const userFavorite = await Favorite.find({ userId });
+  const userId = req.session.userId; // 세션에서 아이디 가져오기 
+  const userFavorite = await Favorite.find({ userId }); // userFavorite에서 아이디 찾아오기 
+  const fileName = await ({stockCode});
+  
+  const filePath = `/Users/swFinal/TradingSight/stockImages/${fileName}`;
+  
   console.log(userFavorite);
+  console.log(filePath);
+
+  
 
   if (userId) {
     try {
       if (userFavorite) {
-        res.render('userFavoriteView', { userId: userId, favorites: userFavorite, message: '' });
+        res.render('userFavoriteView', { userId: userId, favorites: userFavorite, message: '', filePath:filePath });
       } else {
-        res.render('userFavoriteView', { userId: userId, favorites: [], message: '관심종목이 없습니다.' });
+        res.render('userFavoriteView', { userId: userId, favorites: [], message: '관심종목이 없습니다.', filePath:'' });
       }
     } catch (error) {
       res.status(500).send('Internal Server Error')

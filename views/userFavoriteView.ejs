@@ -20,6 +20,10 @@
                         <span class="stocktext"><%= favorite.stockName %> (<%= favorite.stockCode %>)</span>
                         </div>
                         <p></p> 
+                        <div class="imagecontainer">
+                            <div id="image-container">
+                                <p></p>
+                            </div>
                         <form action="/user/myPage/userFavorite/delete/<%= favorite._id %>" method="post">
                             <button type="submit">삭제</button>
                         </form>
@@ -58,8 +62,7 @@
               <div class="dot dot-4"></div>
               <div class="dot dot-5"></div>
             </div>
-    </div>
-
+        </div>
 </body>
 
 </html>
