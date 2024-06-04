@@ -24,6 +24,12 @@
                             <div id="image-container">
                                 <p></p>
                             </div>
+                        <button onclick="loadImage()" class="btn" type="button">
+                            <strong>이미지보기 </strong>
+                            <div id="container-stars">
+                                <div id="stars"></div>
+                            </div>
+                            </button>
                         <form action="/user/myPage/userFavorite/delete/<%= favorite._id %>" method="post">
                             <button type="submit">삭제</button>
                         </form>
@@ -63,6 +69,29 @@
               <div class="dot dot-5"></div>
             </div>
         </div>
+
+        <script>
+            // 이미지를 로드하기 위한 함수
+            function loadImage() {
+                // AJAX 요청
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', '/userFavorite/image');
+                xhr.setRequestHeader('Content-Type', 'application/json');
+                xhr.responseType = 'blob'; // 이미지 데이터를 Blob 형식으로 받아옴
+                xhr.onload = function () {
+                    if (xhr.status === 200) {
+                        // 성공적으로 이미지를 받았을 때 화면에 표시
+                        var imageContainer = document.getElementById('image-container');
+                        var imageUrl = URL.createObjectURL(xhr.response);
+                        imageContainer.innerHTML = `<img src="${imageUrl}" alt="주식 예측 이미지">`;
+                    } else {
+                        // 에러 처리
+                        console.error('이미지를 받아오는 데 실패했습니다.');
+                    }
+                };
+                xhr.send();
+            }
+        </script>
 </body>
 
 </html>

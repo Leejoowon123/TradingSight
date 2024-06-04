@@ -213,21 +213,14 @@ router.post('/user/favorite', async (req, res) => {
 router.get('/user/myPage/userFavorite', async (req, res) => {
   const userId = req.session.userId; // 세션에서 아이디 가져오기 
   const userFavorite = await Favorite.find({ userId }); // userFavorite에서 아이디 찾아오기 
-  const fileName = await ({stockCode});
-  
-  const filePath = `/Users/swFinal/TradingSight/stockImages/${fileName}`;
-  
   console.log(userFavorite);
-  console.log(filePath);
-
-  
 
   if (userId) {
     try {
       if (userFavorite) {
-        res.render('userFavoriteView', { userId: userId, favorites: userFavorite, message: '', filePath:filePath });
+        res.render('userFavoriteView', { userId: userId, favorites: userFavorite, message: '' });
       } else {
-        res.render('userFavoriteView', { userId: userId, favorites: [], message: '관심종목이 없습니다.', filePath:'' });
+        res.render('userFavoriteView', { userId: userId, favorites: [], message: '관심종목이 없습니다.'});
       }
     } catch (error) {
       res.status(500).send('Internal Server Error')
@@ -374,6 +367,24 @@ router.get('/stockShow', async (req, res) => {
 });
 
 router.post('/stockShow/image', (req, res) => {
+  const token = req.session.token;
+
+  if (token) {
+    const decoded = jwt.verify(token, '1234'); //토큰에 인증 한 후
+    const { stockCode } = decoded;  //토큰에 있는 stockCode, stockName에 접근할 수 있음. 
+    console.log(stockCode);
+    // 이미지 파일 경로 설정
+    const imagePath = `../stockImages/${stockCode}.png`;
+    console.log(imagePath);
+    // 이미지 파일을 클라이언트에게 전송
+    res.sendFile(path.join(__dirname, imagePath));
+  }
+});
+
+router.post('/userFavorite/image', async (req, res) => {
+  const userId = req.session.userId; // 세션에서 아이디 가져오기 
+  const userFavorite = await Favorite.find({ userId }); // userFavorite에서 아이디 찾아오기 
+  console.log(userFavorite);
   const token = req.session.token;
 
   if (token) {
