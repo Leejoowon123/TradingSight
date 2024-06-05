@@ -241,24 +241,28 @@ router.post('/user/myPage/userFavorite/delete/:id', async (req, res) => {
   }
 })
 
-router.post('/user/myPage/userFavorite/image/:id', async(req, res) =>{
+router.post('/user/myPage/userFavorite/image/:id', async (req, res) => {
   const userId = req.session.userId; // 사용자 id
   const favoriteId = req.params.id;  // 사용자 주식 id
   console.log(favoriteId + '이미지 기능에서');
-  if(userId){
-    try{
+  if (userId) {
+    try {
       const userFavorite = await Favorite.findOne({ _id: favoriteId, userId: userId });
       console.log(userFavorite);
       const stockCode = userFavorite.stockCode;
       console.log(stockCode + '이미지 stockCode');
-      const imagePath = path.join( __dirname , '../stockImages', `${stockCode}.png`);
+      const imagePath = path.join(__dirname, '../stockImages', `${stockCode}.png`);
       console.log(imagePath);
-      res.sendFile(path.join(imagePath));
-    }
-    catch(err) {
+      res.redirect('/user/myPage/userFavorite/image/:id', imagePath);
+      //res.sendFile(path.join(imagePath));
+    } catch (err) {
       console.error(err);
       res.status(500).json({ message: 'Server Error' });
+    }
   }
+});
+
+  
 
 router.get('/user/myPage/userFavorite/image/:id', async(req,res)=>{
   console.log('관심주식 이미지 랜더링');
