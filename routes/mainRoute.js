@@ -211,8 +211,8 @@ router.post('/user/favorite', async (req, res) => {
 });
 
 router.get('/user/myPage/userFavorite', async (req, res) => {
-  const userId = req.session.userId; // 세션에서 아이디 가져오기 
-  const userFavorite = await Favorite.find({ userId }); // userFavorite에서 아이디 찾아오기 
+  const userId = req.session.userId;
+  const userFavorite = await Favorite.find({ userId });
   console.log(userFavorite);
 
   if (userId) {
@@ -220,7 +220,7 @@ router.get('/user/myPage/userFavorite', async (req, res) => {
       if (userFavorite) {
         res.render('userFavoriteView', { userId: userId, favorites: userFavorite, message: '' });
       } else {
-        res.render('userFavoriteView', { userId: userId, favorites: [], message: '관심종목이 없습니다.'});
+        res.render('userFavoriteView', { userId: userId, favorites: [], message: '관심종목이 없습니다.' });
       }
     } catch (error) {
       res.status(500).send('Internal Server Error')
@@ -239,6 +239,36 @@ router.post('/user/myPage/userFavorite/delete/:id', async (req, res) => {
   } catch {
     res.status(500).send('Delete Error');
   }
+})
+
+router.post('/user/myPage/userFavorite/image/:id', async(req, res) =>{
+  const userId = req.session.userId; // 사용자 id
+  const favoriteId = req.params.id;  // 사용자 주식 id
+  console.log(favoriteId + '이미지 기능에서');
+  if(userId){
+    try{
+      const userFavorite = await Favorite.findOne({ _id: favoriteId, userId: userId });
+      console.log(userFavorite);
+      const stockCode = userFavorite.stockCode;
+      console.log(stockCode + '이미지 stockCode');
+      const imagePath = path.join( __dirname , '../stockImages', `${stockCode}.png`);
+      console.log(imagePath);
+      res.sendFile(path.join(imagePath));
+    }
+    catch(err) {
+      console.error(err);
+      res.status(500).json({ message: 'Server Error' });
+  }
+
+router.get('/user/myPage/userFavorite/image/:id', async(req,res)=>{
+  console.log('관심주식 이미지 랜더링');
+  imagePath = req.query.imagePath
+    if (imagePath) {
+        res.render('favoriteImageView', { imagePath });
+    } else {
+        res.status(400).send('Image path is missing');
+    }
+  //res.render('favoriteImageView',{ imagePath });
 })
 
 router.post('/user/myPage/favorite', async (req, res) => {
@@ -336,7 +366,7 @@ router.get('/stockShow', async (req, res) => {
                 }
 
                 // 이미지 파일 경로 반환
-                const imageUrl = `/Users/swFinal/TradingSight/stockImages/${fileName}`;
+                const imageUrl = `/Users/swFinal/TradingSight/stockImages${fileName}`;
                 res.render('stockShowView', { stockCode, stockName, imageUrl, message }); //ejs로 값을 넘기기
               });
             } catch (error) {
@@ -378,25 +408,6 @@ router.post('/stockShow/image', (req, res) => {
     console.log(imagePath);
     // 이미지 파일을 클라이언트에게 전송
     res.sendFile(path.join(__dirname, imagePath));
-  }
-});
-
-router.post('/userFavorite/image', async (req, res) => {
-  const userId = req.session.userId; // 세션에서 아이디 가져오기
-  const userFavorites = await Favorite.find({ userId }); // userFavorite에서 아이디 찾아오기
-  console.log(userFavorites);
-  
-  if (userId && userFavorites.length > 0) {
-    // stockCode들에 대한 이미지 경로 배열 생성
-    const imagePaths = userFavorites.map(favorite => {
-      const imagePath = `../stockImages/${favorite.stockCode}.png`;
-      return path.join(__dirname, imagePath);
-    });
-
-    // 이미지 경로 배열을 클라이언트에게 전송
-    res.json(imagePaths);
-  } else {
-    res.status(404).send('사용자 즐겨찾기 정보가 없습니다.');
   }
 });
 

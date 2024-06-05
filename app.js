@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const mainRouter = require('./routes/mainRoute');
 const session = require('express-session');
 const cors = require('cors');
-
+  
 const app = express();
 
 // MongoDB 연결 설정
@@ -51,6 +51,9 @@ app.use('/public/stylesheets', (req, res, next) => {
   res.setHeader('Content-Type', 'text/css');
   next();
 }, express.static(path.join(__dirname, 'public', 'stylesheets')));
+
+// 정적 파일 경로 추가 설정(주식이미지 접근)
+app.use('/stockImages', express.static(path.join(__dirname, 'stockImages')));
 
 // 라우터 설정
 app.use('/', mainRouter);

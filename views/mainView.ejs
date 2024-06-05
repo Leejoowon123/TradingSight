@@ -25,6 +25,11 @@
                         <button type="submit" class="btn">Logout</button>
                     </div>
                 </form>
+                <form action="/aboutUs" method="post">
+                    <div class="loginarea">
+                        <button type="submit" class="btn">About Us</button>
+                    </div>
+                </form>
                 <% } else { %>
                     <!-- 로그인이 되어있지 않을 때 보여질 버튼 -->
                     <form action="/user/signIn" method="post">
@@ -36,6 +41,11 @@
                         <div class="loginarea">
                             <button type="submit" class="btn">Sign Up</button>
 
+                        </div>
+                    </form>
+                    <form action="/aboutUs" method="post">
+                        <div class="loginarea">
+                            <button type="submit" class="btn">About Us</button>
                         </div>
                     </form>
                     <% } %>

@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>myPage</title>
+    <link rel="stylesheet" href="/public/stylesheets/updateMyPage.css">
 </head>
 
 <body>
@@ -13,21 +14,27 @@
             alert('<%= message %>'); // 서버에서 전달된 메시지를 경고창으로 표시
         </script>
         <% } %>
-            <div>myPage</div>
-            <label for="userId">사용자 ID</label>
+            <p>myPage</p>
             <div class="userIdarea">
-                <p>
-                    <%= userId %>
+                <p for="userId">
+                    사용자 ID: <%= userId %>
                 </p>
             </div>
+
             <form action="/user/myPage/updateNewPassword" method="post">
                 <div>
-                    <label for="userPassword">변경할 비밀번호</label>
+                    <p for="userPassword">변경할 비밀번호</p>
                     <!-- 사용자가 입력할 새 비밀번호 -->
-                    <input type="password" id="userPassword" name="userPassword" placeholder="새 비밀번호">
+                    <div class="box-input">
+                        <div class="border">
+                          <input class="input" type="password" id="userPassword" name="userPassword" placeholder="새 비밀번호">
+                        </div>
+                    </div>
+                      
+                    <!-- <input type="password" id="userPassword" name="userPassword" placeholder="새 비밀번호"> -->
                 </div>
                 <div class="removeId">
-                    <button type="submit">회원정보 수정</button>
+                    <button class="button" type="submit">회원정보 수정</button>
                 </div>
             </form>
 </body>

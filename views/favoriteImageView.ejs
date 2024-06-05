@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FavoriteImage</title>
+</head>
+<body>
+    <h1>관심 주식 이미지</h1>
+    <% if (imagePath) { %>
+        <img src="<%= imagePath %>" alt="Favorite Image">
+
+    <% } else { %>
+        <p>이미지를 불러올 수 없습니다.</p>
+    <% } %>
+</body>
+</html>
