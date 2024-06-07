@@ -325,7 +325,8 @@ router.get('/stockShow', async (req, res) => {
 
               // 저장할 파일 경로 설정
               const fileName = `${stockCode}.png`;
-              const dirPath = 'C:/workspace/TradingSight/stockImages';
+              // const dirPath = 'C:/workspace/TradingSight/stockImages'; //이주원
+              const dirPath = '/Users/idoyun/nodeP/TradingSight/stockImages'; //이도윤
               const filePath = path.join(dirPath, fileName);
 
               // 디렉토리 존재 여부 확인 및 생성
@@ -341,7 +342,8 @@ router.get('/stockShow', async (req, res) => {
                 }
 
                 // 이미지 파일 경로 반환
-                const imageUrl = `C:/workspace/TradingSight/stockImages${fileName}`;
+                // const imageUrl = `C:/workspace/TradingSight/stockImages${fileName}`; //이주원
+                const imageUrl = `C:/workspace/TradingSight/stockImages${fileName}`; //이도윤
                 res.render('stockShowView', { stockCode, stockName, imageUrl, message }); //ejs로 값을 넘기기
               });
             } catch (error) {
@@ -381,10 +383,37 @@ router.post('/stockShow/image', (req, res) => {
     // 이미지 파일 경로 설정
     const imagePath = `../stockImages/${stockCode}.png`;
     console.log(imagePath);
-    // 이미지 파일을 클라이언트에게 전송
+
+
+
+    // 이미지 파일을 클라이언트에게 전
     res.sendFile(path.join(__dirname, imagePath));
   }
 });
+
+const { run } = require('../gemini/geminiApi');
+
+router.post('/stockShow/AI', async (req, res) => {
+  const token = req.session.token;
+  if (token) {
+    const decoded = jwt.verify(token, '1234'); //토큰에 인증 한 후
+    const { stockCode } = decoded;  //토큰에 있는 stockCode, stockName에 접근할 수 있음. 
+    console.log(stockCode);
+    // 이미지 파일 경로 설정
+    const imagePath = `../stockImages/${stockCode}.png`;
+    console.log(imagePath);
+    console.log("imagePath : "+ imagePath)
+      try {
+        // 이미지 경로는 요청 본문에서 받거나, 다른 방식으로 결정합니다.
+        const resultText = await run(imagePath);
+        res.json({ message: resultText });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).send('Internal Server Error');
+    }
+  }
+});
+
 
 //라우터 외부 전송
 module.exports = router;
