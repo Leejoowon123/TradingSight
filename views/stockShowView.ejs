@@ -9,6 +9,14 @@
 </head>
 
 <body>
+    <!-- <script type="importmap">
+        {
+            "imports": {
+            "@google/generative-ai": "https://esm.run/@google/generative-ai",
+            "fs": "https://esm.run/fs"
+            }
+        }
+    </script> -->
     <h1 class="neon">Stock Vision</h1>
 
     <% if (message) { %>
@@ -49,7 +57,14 @@
                 </div>
                 <form action='/user/favorite' method="post">
                     <button type="submit" class="favoritebutton">관심주식에 추가</button>
-                </form>
+                </form><br>
+                <div>
+                    <input type="text" class="stockCode" value="<%= stockCode %>">
+                    <button id="send">ai의 그래프 분석</button>
+                    <div class="chatbot-body">
+                        
+                    </div>
+                </div>
             </div>
 
             <script>
@@ -65,7 +80,9 @@
                             // 성공적으로 이미지를 받았을 때 화면에 표시
                             var imageContainer = document.getElementById('image-container');
                             var imageUrl = URL.createObjectURL(xhr.response);
-                            imageContainer.innerHTML = `<img src="${imageUrl}" alt="주식 예측 이미지">`;
+                            imageContainer.innerHTML = `<img id="image" src="${imageUrl}" alt="주식 예측 이미지">`;
+                            var template = '<input value="' + imageUrl + '" hidden>';
+                            document.querySelector('.chatbot-body').insertAdjacentHTML('beforeend',template);
                         } else {
                             // 에러 처리
                             console.error('이미지를 받아오는 데 실패했습니다.');
@@ -73,6 +90,24 @@
                     };
                     xhr.send();
                 }
+            </script>
+            <script>
+                document.querySelector('#send').addEventListener('click', function() {
+                    var xhrAI = new XMLHttpRequest();
+                    xhrAI.open('POST', '/stockShow/AI');
+                    xhrAI.setRequestHeader('Content-Type', 'application/json');
+                    xhrAI.onload = function () {
+                        if (xhrAI.status === 200) {
+                            var outputText = xhrAI.response;
+                            var template = '<div class="line"><span class="chat-box">' + outputText +'</span></div>';
+                            document.querySelector('.chatbot-body').insertAdjacentHTML('beforeend',template);
+                        } else {
+                            // 에러 처리
+                            console.error('이미지를 받아오는 데 실패했습니다.');
+                        }
+                    };
+                    xhrAI.send();
+                })
             </script>
 </body>
 

@@ -8,6 +8,8 @@ db = client['TradingSight']  # 데이터베이스 이름
 # Excel 파일 읽기
 # excel_file = '/Users/Zen1/leeseongjun/KOSPI_yfinance_ticker.xlsx'  # Excel 파일 경로
 excel_file = '/Users/Zen1/leeseongjun/KOSDAQ_yfinance_ticker.xlsx'  # Excel 파일 경로
+# excel_file = '/Users/idoyun/nodeP/TradingSight/pythonfiles/KOSPI_yfinance_ticker.xlsx'  # Excel 파일 경로_이도윤
+# excel_file = '/Users/idoyun/nodeP/TradingSight/pythonfiles/KOSDAQ_yfinance_ticker.xlsx'  # Excel 파일 경로_이도윤
 
 df = pd.read_excel(excel_file)
 
