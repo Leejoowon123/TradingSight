@@ -245,16 +245,21 @@ router.post('/user/myPage/userFavorite/image/:id', async (req, res) => {
   const userId = req.session.userId; // 사용자 id
   const favoriteId = req.params.id;  // 사용자 주식 id
   console.log(favoriteId + '이미지 기능에서');
-  if (userId) {
+
+  if (userId&&favoriteId) {
     try {
       const userFavorite = await Favorite.findOne({ _id: favoriteId, userId: userId });
       console.log(userFavorite);
+      if (!userFavorite) {
+        throw new Error('User favorite not found');
+      }
+      
       const stockCode = userFavorite.stockCode;
       console.log(stockCode + '이미지 stockCode');
       const imagePath = path.join(__dirname, '../stockImages', `${stockCode}.png`);
       console.log(imagePath);
-      res.redirect('/user/myPage/userFavorite/image/:id', imagePath);
-      //res.sendFile(path.join(imagePath));
+      res.sendfile(imagePath);
+      //res.redirect(`/user/myPage/userFavorite/image/${favoriteId}?imagePath=${encodeURIComponent(imagePath)}`);
     } catch (err) {
       console.error(err);
       res.status(500).json({ message: 'Server Error' });
@@ -262,18 +267,17 @@ router.post('/user/myPage/userFavorite/image/:id', async (req, res) => {
   }
 });
 
-  
+router.get('/user/myPage/userFavorite/image/:id', (req, res) => {
+  const userId = req.session.userId;
+  const imagePath = req.query.imagePath;
 
-router.get('/user/myPage/userFavorite/image/:id', async(req,res)=>{
-  console.log('관심주식 이미지 랜더링');
-  imagePath = req.query.imagePath
-    if (imagePath) {
-        res.render('favoriteImageView', { imagePath });
-    } else {
-        res.status(400).send('Image path is missing');
-    }
-  //res.render('favoriteImageView',{ imagePath });
-})
+  if (userId&&imagePath) {
+    res.render('favoriteImageView', { imagePath:imagePath });
+    console.log("이미지 경로 렌더링: " + imagePath);
+  } else {
+    res.status(400).send('Image path is missing');
+  }
+});
 
 router.post('/user/myPage/favorite', async (req, res) => {
   res.redirect('/user/myPage/userFavorite');
@@ -311,8 +315,6 @@ router.post('/search', async (req, res) => {
   else {
     res.redirect('/user/signIn?message=로그인 후 이용해주세요');
   }
-
-
 });
 
 //stockShow화면을 띄움, 값을 표시함
