@@ -357,8 +357,8 @@ router.get('/stockShow', async (req, res) => {
               // 저장할 파일 경로 설정
               const fileName = `${stockCode}.png`;
               // const imageUrl = `C:/workspace/TradingSight/stockImages${fileName}`; //이주원
-              // const imageUrl = `C:/workspace/TradingSight/stockImages${fileName}`; //이도윤
-              const dirPath = '/Users/swFinal/TradingSight/stockImages';
+              const dirPath = '/Users/idoyun/nodeP/TradingSight/stockImages'; //이도윤
+              // const dirPath = '/Users/swFinal/TradingSight/stockImages';
               const filePath = path.join(dirPath, fileName);
 
               // 디렉토리 존재 여부 확인 및 생성
@@ -432,11 +432,11 @@ router.post('/stockShow/AI', async (req, res) => {
     console.log(stockCode);
     // 이미지 파일 경로 설정
     const imagePath = `../stockImages/${stockCode}.png`;
-    console.log(imagePath);
+    console.log("stockCode : "+ stockCode)
     console.log("imagePath : "+ imagePath)
       try {
         // 이미지 경로는 요청 본문에서 받거나, 다른 방식으로 결정합니다.
-        const resultText = await run(imagePath);
+        const resultText = await run(stockCode, imagePath);
         res.json({ message: resultText });
     } catch (error) {
         console.error('Error:', error);
@@ -444,6 +444,7 @@ router.post('/stockShow/AI', async (req, res) => {
     }
   }
 });
+
 
 
 //라우터 외부 전송

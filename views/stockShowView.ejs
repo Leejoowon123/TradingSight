@@ -55,17 +55,17 @@
                 <div id="image-container">
                     <p></p>
                 </div>
+                <div class="chatbot-body">
+                        
+                </div>
                 <form action='/user/favorite' method="post">
                     <button type="submit" class="favoritebutton">관심주식에 추가</button>
                 </form><br>
-                <div>
-                    <input type="text" class="stockCode" value="<%= stockCode %>">
+                <!-- <div>
+                    <input type="text" class="stockCode" value="<%= stockCode %>" hidden>
                     <button id="send">ai의 그래프 분석</button>
-                    <div class="chatbot-body">
-                        
-                    </div>
-                </div>
-            </div>
+                </div> -->
+            </div><br>
 
             <script>
                 // 이미지를 로드하기 위한 함수
@@ -89,9 +89,24 @@
                         }
                     };
                     xhr.send();
+
+                    var xhrAI = new XMLHttpRequest();
+                    xhrAI.open('POST', '/stockShow/AI');
+                    xhrAI.setRequestHeader('Content-Type', 'application/json');
+                    xhrAI.onload = function () {
+                        if (xhrAI.status === 200) {
+                            var outputText = xhrAI.response;
+                            var template = '<div class="line"><span class="chat-box">' + outputText +'</span></div>';
+                            document.querySelector('.chatbot-body').insertAdjacentHTML('beforeend',template);
+                        } else {
+                            // 에러 처리
+                            console.error('답을 받아오는 데 실패했습니다.');
+                        }
+                    };
+                    xhrAI.send();
                 }
             </script>
-            <script>
+            <!-- <script>
                 document.querySelector('#send').addEventListener('click', function() {
                     var xhrAI = new XMLHttpRequest();
                     xhrAI.open('POST', '/stockShow/AI');
@@ -108,7 +123,7 @@
                     };
                     xhrAI.send();
                 })
-            </script>
+            </script> -->
 </body>
 
 </html>
