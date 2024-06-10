@@ -356,6 +356,8 @@ router.get('/stockShow', async (req, res) => {
 
               // 저장할 파일 경로 설정
               const fileName = `${stockCode}.png`;
+              // const imageUrl = `C:/workspace/TradingSight/stockImages${fileName}`; //이주원
+              // const imageUrl = `C:/workspace/TradingSight/stockImages${fileName}`; //이도윤
               const dirPath = '/Users/swFinal/TradingSight/stockImages';
               const filePath = path.join(dirPath, fileName);
 
