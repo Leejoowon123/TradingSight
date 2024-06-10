@@ -22,11 +22,6 @@ router.get('/', async (req, res) => {
   res.render('mainView', { loggedIn, message })
 })
 
-router.post('/aboutUs', async (req, res) => {
-  res.render('aboutUs');
-})
-
-
 router.get('/user/signIn', (req, res) => {
   const message = req.query.message || ''; // message 쿼리 파라미터를 가져오고, 값이 없는 경우 빈 문자열을 사용합니다.
   res.render('signInView', { message }); // 렌더링 시 message 변수를 전달합니다.
@@ -246,6 +241,44 @@ router.post('/user/myPage/userFavorite/delete/:id', async (req, res) => {
   }
 })
 
+router.post('/user/myPage/userFavorite/image/:id', async (req, res) => {
+  const userId = req.session.userId; // 사용자 id
+  const favoriteId = req.params.id;  // 사용자 주식 id
+  console.log(favoriteId + '이미지 기능에서');
+
+  if (userId&&favoriteId) {
+    try {
+      const userFavorite = await Favorite.findOne({ _id: favoriteId, userId: userId });
+      console.log(userFavorite);
+      if (!userFavorite) {
+        throw new Error('User favorite not found');
+      }
+      
+      const stockCode = userFavorite.stockCode;
+      console.log(stockCode + '이미지 stockCode');
+      const imagePath = path.join(__dirname, '../stockImages', `${stockCode}.png`);
+      console.log(imagePath);
+      res.sendfile(imagePath);
+      //res.redirect(`/user/myPage/userFavorite/image/${favoriteId}?imagePath=${encodeURIComponent(imagePath)}`);
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: 'Server Error' });
+    }
+  }
+});
+
+router.get('/user/myPage/userFavorite/image/:id', (req, res) => {
+  const userId = req.session.userId;
+  const imagePath = req.query.imagePath;
+
+  if (userId&&imagePath) {
+    res.render('favoriteImageView', { imagePath:imagePath });
+    console.log("이미지 경로 렌더링: " + imagePath);
+  } else {
+    res.status(400).send('Image path is missing');
+  }
+});
+
 router.post('/user/myPage/favorite', async (req, res) => {
   res.redirect('/user/myPage/userFavorite');
 })
@@ -282,8 +315,6 @@ router.post('/search', async (req, res) => {
   else {
     res.redirect('/user/signIn?message=로그인 후 이용해주세요');
   }
-
-
 });
 
 //stockShow화면을 띄움, 값을 표시함
@@ -325,8 +356,7 @@ router.get('/stockShow', async (req, res) => {
 
               // 저장할 파일 경로 설정
               const fileName = `${stockCode}.png`;
-              // const dirPath = 'C:/workspace/TradingSight/stockImages'; //이주원
-              const dirPath = '/Users/idoyun/nodeP/TradingSight/stockImages'; //이도윤
+              const dirPath = '/Users/swFinal/TradingSight/stockImages';
               const filePath = path.join(dirPath, fileName);
 
               // 디렉토리 존재 여부 확인 및 생성
@@ -342,8 +372,7 @@ router.get('/stockShow', async (req, res) => {
                 }
 
                 // 이미지 파일 경로 반환
-                // const imageUrl = `C:/workspace/TradingSight/stockImages${fileName}`; //이주원
-                const imageUrl = `C:/workspace/TradingSight/stockImages${fileName}`; //이도윤
+                const imageUrl = `C:/workspace/TradingSight/stockImages${fileName}`;
                 res.render('stockShowView', { stockCode, stockName, imageUrl, message }); //ejs로 값을 넘기기
               });
             } catch (error) {

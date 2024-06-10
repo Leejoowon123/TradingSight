@@ -20,7 +20,9 @@
                         <div class="animation">
                         <span class="stocktext"><%= favorite.stockName %> (<%= favorite.stockCode %>)</span>
                         </div>
-                        <p></p> 
+                        <form action="/user/myPage/userFavorite/image/<%= favorite._id %>" method="post">
+                            <button type="submit">이미지 보기</button>
+                        </form>
                         <form action="/user/myPage/userFavorite/delete/<%= favorite._id %>" method="post">
                             <button type="submit">삭제</button>
                         </form>
