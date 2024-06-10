@@ -22,11 +22,6 @@ router.get('/', async (req, res) => {
   res.render('mainView', { loggedIn, message })
 })
 
-router.post('/aboutUs', async (req, res) => {
-  res.render('aboutUs');
-})
-
-
 router.get('/user/signIn', (req, res) => {
   const message = req.query.message || ''; // message 쿼리 파라미터를 가져오고, 값이 없는 경우 빈 문자열을 사용합니다.
   res.render('signInView', { message }); // 렌더링 시 message 변수를 전달합니다.
@@ -246,6 +241,44 @@ router.post('/user/myPage/userFavorite/delete/:id', async (req, res) => {
   }
 })
 
+router.post('/user/myPage/userFavorite/image/:id', async (req, res) => {
+  const userId = req.session.userId; // 사용자 id
+  const favoriteId = req.params.id;  // 사용자 주식 id
+  console.log(favoriteId + '이미지 기능에서');
+
+  if (userId && favoriteId) {
+    try {
+      const userFavorite = await Favorite.findOne({ _id: favoriteId, userId: userId });
+      console.log(userFavorite);
+      if (!userFavorite) {
+        throw new Error('User favorite not found');
+      }
+
+      const stockCode = userFavorite.stockCode;
+      console.log(stockCode + '이미지 stockCode');
+      const imagePath = path.join(__dirname, '../stockImages', `${stockCode}.png`);
+      console.log(imagePath);
+      res.sendfile(imagePath);
+      //res.redirect(`/user/myPage/userFavorite/image/${favoriteId}?imagePath=${encodeURIComponent(imagePath)}`);
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: 'Server Error' });
+    }
+  }
+});
+
+router.get('/user/myPage/userFavorite/image/:id', (req, res) => {
+  const userId = req.session.userId;
+  const imagePath = req.query.imagePath;
+
+  if (userId && imagePath) {
+    res.render('favoriteImageView', { imagePath: imagePath });
+    console.log("이미지 경로 렌더링: " + imagePath);
+  } else {
+    res.status(400).send('Image path is missing');
+  }
+});
+
 router.post('/user/myPage/favorite', async (req, res) => {
   res.redirect('/user/myPage/userFavorite');
 })
@@ -282,8 +315,6 @@ router.post('/search', async (req, res) => {
   else {
     res.redirect('/user/signIn?message=로그인 후 이용해주세요');
   }
-
-
 });
 
 //stockShow화면을 띄움, 값을 표시함
@@ -367,7 +398,7 @@ router.get('/stockShow', async (req, res) => {
     }
   }
   else {
-    res.redirect('/user/signIn?message=로그인 후 이용해주세요');
+    res.status(403).json({ message: 'Token is missing' });
   }
 });
 
@@ -381,11 +412,36 @@ router.post('/stockShow/image', (req, res) => {
     // 이미지 파일 경로 설정
     const imagePath = `../stockImages/${stockCode}.png`;
     console.log(imagePath);
-    // 이미지 파일을 클라이언트에게 전송
+
+
+
+    // 이미지 파일을 클라이언트에게 전
     res.sendFile(path.join(__dirname, imagePath));
   }
 });
 
+const { run } = require('../gemini/geminiApi');
+
+router.post('/stockShow/AI', async (req, res) => {
+  const token = req.session.token;
+  if (token) {
+    const decoded = jwt.verify(token, '1234'); //토큰에 인증 한 후
+    const { stockCode } = decoded;  //토큰에 있는 stockCode, stockName에 접근할 수 있음. 
+    console.log(stockCode);
+    // 이미지 파일 경로 설정
+    const imagePath = `../stockImages/${stockCode}.png`;
+    console.log(imagePath);
+    console.log("imagePath : " + imagePath)
+    try {
+      // 이미지 경로는 요청 본문에서 받거나, 다른 방식으로 결정합니다.
+      const resultText = await run(imagePath);
+      res.json({ message: resultText });
+    } catch (error) {
+      console.error('Error:', error);
+      res.status(500).send('Internal Server Error');
+    }
+  }
+});
 
 
 //라우터 외부 전송
