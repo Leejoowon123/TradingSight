@@ -1,0 +1,6 @@
+/myenv
+/node_modules
+/stockImages
+
+.nodemon.json
+.ReadMe.txt

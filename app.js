@@ -52,6 +52,9 @@ app.use('/public/stylesheets', (req, res, next) => {
   next();
 }, express.static(path.join(__dirname, 'public', 'stylesheets')));
 
+// 정적 파일 경로 추가 설정(주식이미지 접근)
+app.use('/imagePath', express.static(path.join(__dirname, 'stockImages')));
+
 // 라우터 설정
 app.use('/', mainRouter);
 
