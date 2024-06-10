@@ -1,7 +1,6 @@
 /myenv
 /node_modules
 /stockImages
-.package-lock.json
-.package.json
+
 .nodemon.json
 .ReadMe.txt
