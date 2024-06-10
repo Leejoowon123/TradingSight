@@ -196,3 +196,7 @@ strong {
   justify-content: centet;
   align-items: center;
 }
+
+.chat-box {background: #eee; padding: 5px; max-width: 200px;}
+.mine {margin-left: auto;}
+.line {margin-top: 10px; display: flex;}
