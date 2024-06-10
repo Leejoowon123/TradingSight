@@ -1,6 +1,4 @@
 const { GoogleGenerativeAI } = require("@google/generative-ai");
-// import { GoogleGenerativeAI } from "@google/generative-ai"
-// import fs from "fs";
 const fs = require("fs");
 const path = require("path");
 
@@ -20,33 +18,21 @@ function fileToGenerativePart(relativePath, mimeType) {
     },
   };
 }
-// function fileToGenerativePart(path, mimeType) {
-//   return {
-//     inlineData: {
-//       data: Buffer.from(fs.readFileSync(path)).toString("base64"),
-//       mimeType
-//     },
-//   };
-// }
 
-async function run(imagePath) {
+async function run(stockCode, imagePath) {
 
   // The Gemini 1.5 models are versatile and work with both text-only and multimodal prompts
   const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-  const prompt = "주가 예상 그래프이다. 이를 해석해줘.";
+  const prompt ="아래 질문에 대해 한글로 답해줘." + stockCode + "의 주가 예상 그래프이다. 해당 종목의 정보를 검색하여 이를 바탕으로 해석해줘.";
 
   const imageParts = [
-    // fileToGenerativePart("../stockImages/"+document.querySelector('input').value+".png", "image/png"),
     fileToGenerativePart(imagePath, "image/png"),
   ];
-  // const imageParts = "../stockImages/"+document.querySelector('input').value+".png";
 
   const result = await model.generateContent([prompt, ...imageParts]);
   const response = await result.response;
   const text = response.text();
-  // var template = '<div class="line"><span class="chat-box">' + text +'</span></div>';
-  // document.querySelector('.chatbot-body').insertAdjacentHTML('beforeend',template);
   console.log(text);
   return text;
 }
@@ -54,7 +40,3 @@ async function run(imagePath) {
 module.exports = {
   run
 };
-
-// document.querySelector('#send').addEventListener('click', function() {
-  // run();
-// })
