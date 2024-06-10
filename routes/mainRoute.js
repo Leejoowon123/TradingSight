@@ -367,7 +367,7 @@ router.get('/stockShow', async (req, res) => {
     }
   }
   else {
-    res.status(403).json({ message: 'Token is missing' });
+    res.redirect('/user/signIn?message=로그인 후 이용해주세요');
   }
 });
 
