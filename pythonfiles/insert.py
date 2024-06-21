@@ -18,7 +18,7 @@ collection = db['stock']  # 컬렉션 이름
 
 # 데이터프레임의 각 행을 MongoDB에 삽입
 for index, row in df.iterrows():
-    data = {'stockName': row[0], 'stockCode': row[1]}
+    data = {'stockName': row[0].lower(), 'stockCode': row[1]}  # 첫 번째 열만 소문자로 변환하여 삽입
     collection.insert_one(data)
 
 print("데이터 삽입이 완료되었습니다.")

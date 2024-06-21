@@ -5,8 +5,8 @@ body {
   /* 가로 중앙 정렬 */
   justify-content: center;
   /* 세로 중앙 정렬 */
-  height: 100vh;
   /* 화면 전체 높이만큼 body 요소의 높이를 설정하여 세로 중앙 정렬을 도와줍니다. */
+  background-color: black;
 }
 
 #image-container,
@@ -17,6 +17,7 @@ button {
 
 /*글씨*/
 .neon {
+  font-size: 68px;
   color: #fff;
   text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 20px #ff0080, 0 0 30px #ff0080, 0 0 40px #ff0080, 0 0 55px #ff0080, 0 0 75px #ff0080;
 }
@@ -192,11 +193,27 @@ strong {
 
 .imagecontainer {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: centet;
   align-items: center;
 }
 
-.chat-box {background: #eee; padding: 5px; max-width: 200px;}
-.mine {margin-left: auto;}
-.line {margin-top: 10px; display: flex;}
+.chat-box {
+  background: #eee;
+  padding: 5px;
+  max-width: 200px;
+}
+
+.mine {
+  margin-left: auto;
+}
+
+.line {
+  margin-top: 10px;
+  display: flex;
+}
+
+.stockname {
+  font-size: 38px;
+  color: white;
+}

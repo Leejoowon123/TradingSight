@@ -77,14 +77,13 @@ def receive_stock_code():
     plt.legend()    
 
     # 이미지 저장(서버에 저장되는것을 구현)
-    # image_dir = '/Users/Zen1/leeseongjun/nodejsStudy/aaa' #이성준
-    image_dir = '/Users/idoyun/nodeP/TradingSight/aaa' #이도윤
-    # image_dir = '/Users/swFinal/TradingSight/stockImages'
+
+    image_dir = '/Users/Zen1/leeseongjun/nodejsStudy/aaa' #이성준
     if not os.path.exists(image_dir):
         os.makedirs(image_dir)
 
      # 파일 이름에 숫자를 붙여 저장
-    image_path = os.path.join(image_dir, f'{stock_code}.png')
+    image_path = os.path.join(image_dir, f'stock_prediction_{stock_code}.png')
 
     plt.savefig(image_path)
 

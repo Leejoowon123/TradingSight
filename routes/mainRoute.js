@@ -63,13 +63,14 @@ router.post('/user/signUp', async (req, res) => {
 
 router.post('/user/signUp/signUpLogic', async (req, res) => {
   const { userId, userPassword } = req.body;
-  // 아이디 유효성 검사: 8자 이상, 한글과 영어 숫자만 허용
-  const userIdRegex = /^[가-힣a-zA-Z0-9]{8,}$/;
+  // 아이디 유효성 검사: 8자 이상 16자 이하, 한글과 영어 숫자만 허용
+  const userIdRegex = /^[가-힣a-zA-Z0-9]{8,16}$/;
   if (!userIdRegex.test(userId)) {
     return res.redirect('/user/signUp?message=아이디는 8자 이상이어야 하며, 한글과 영어 숫자만 사용 가능합니다.');
   }
   // 비밀번호 유효성 검사: 8자 이상
-  if (userPassword.length < 8) {
+  const userPssswordRegex = /^[가-힣a-zA-Z0-9]{8,16}$/;
+  if (!userPssswordRegex) {
     return res.redirect('/user/signUp?message=비밀번호는 8자 이상이어야 하며, 한글과 영어 숫자만 사용 가능합니다.');
   }
   const user = await User.findOne({ userId });
@@ -246,14 +247,14 @@ router.post('/user/myPage/userFavorite/image/:id', async (req, res) => {
   const favoriteId = req.params.id;  // 사용자 주식 id
   console.log(favoriteId + '이미지 기능에서');
 
-  if (userId&&favoriteId) {
+  if (userId && favoriteId) {
     try {
       const userFavorite = await Favorite.findOne({ _id: favoriteId, userId: userId });
       console.log(userFavorite);
       if (!userFavorite) {
         throw new Error('User favorite not found');
       }
-      
+
       const stockCode = userFavorite.stockCode;
       console.log(stockCode + '이미지 stockCode');
       const imagePath = path.join(__dirname, '../stockImages', `${stockCode}.png`);
@@ -271,8 +272,8 @@ router.get('/user/myPage/userFavorite/image/:id', (req, res) => {
   const userId = req.session.userId;
   const imagePath = req.query.imagePath;
 
-  if (userId&&imagePath) {
-    res.render('favoriteImageView', { imagePath:imagePath });
+  if (userId && imagePath) {
+    res.render('favoriteImageView', { imagePath: imagePath });
     console.log("이미지 경로 렌더링: " + imagePath);
   } else {
     res.status(400).send('Image path is missing');
@@ -357,7 +358,8 @@ router.get('/stockShow', async (req, res) => {
               // 저장할 파일 경로 설정
               const fileName = `${stockCode}.png`;
               // const imageUrl = `C:/workspace/TradingSight/stockImages${fileName}`; //이주원
-              const dirPath = '/Users/idoyun/nodeP/TradingSight/stockImages'; //이도윤
+              //const dirPath = '/Users/idoyun/nodeP/TradingSight/stockImages'; //이도윤
+              const dirPath = '/Users/Zen1/leeseongjun/nodejsStudy/TradingSight/stockImages';
               // const dirPath = '/Users/swFinal/TradingSight/stockImages';
               const filePath = path.join(dirPath, fileName);
 
@@ -374,7 +376,7 @@ router.get('/stockShow', async (req, res) => {
                 }
 
                 // 이미지 파일 경로 반환
-                const imageUrl = `C:/workspace/TradingSight/stockImages${fileName}`;
+                const imageUrl = `/Users/Zen1/leeseongjun/nodejsStudy/TradingSight/stockImages${fileName}`;
                 res.render('stockShowView', { stockCode, stockName, imageUrl, message }); //ejs로 값을 넘기기
               });
             } catch (error) {
@@ -432,19 +434,26 @@ router.post('/stockShow/AI', async (req, res) => {
     console.log(stockCode);
     // 이미지 파일 경로 설정
     const imagePath = `../stockImages/${stockCode}.png`;
-    console.log("stockCode : "+ stockCode)
-    console.log("imagePath : "+ imagePath)
-      try {
-        // 이미지 경로는 요청 본문에서 받거나, 다른 방식으로 결정합니다.
-        const resultText = await run(stockCode, imagePath);
-        res.json({ message: resultText });
+    console.log("stockCode : " + stockCode)
+    console.log("imagePath : " + imagePath)
+    try {
+      // 이미지 경로는 요청 본문에서 받거나, 다른 방식으로 결정합니다.
+      const resultText = await run(stockCode, imagePath);
+      res.json({ message: resultText });
     } catch (error) {
-        console.error('Error:', error);
-        res.status(500).send('Internal Server Error');
+      console.error('Error:', error);
+      res.status(500).send('Internal Server Error');
     }
   }
 });
 
+router.get('/aboutUs', (req, res) => {
+  res.render('aboutUs'); // 렌더링 시 message 변수를 전달합니다.
+});
+
+router.post('/aboutUs', async (req, res) => {
+  res.redirect('/aboutUs');
+})
 
 
 //라우터 외부 전송

@@ -15,50 +15,78 @@
         </script>
         <% } %>
             <% if (loggedIn) { %>
-                <form action="/user/myPage" method="post">
-                    <div class="loginarea">
-                        <button type="submit" class="btn">My page</button>
-                    </div>
-                </form>
-                <form action="/user/logout" method="post">
-                    <div class="loginarea">
-                        <button type="submit" class="btn">Logout</button>
-                    </div>
-                </form>
-                <form action="/aboutUs" method="post">
-                    <div class="loginarea">
-                        <button type="submit" class="btn">AboutUs</button>
-                    </div>
-                </form>
-                <% } else { %>
-                    <!-- 로그인이 되어있지 않을 때 보여질 버튼 -->
-                    <form action="/user/signIn" method="post">
+                <div class="mainbuttons">
+                    <form action="/user/myPage" method="post">
                         <div class="loginarea">
-                            <button type="submit" class="btn">Sign In</button>
+                            <button type="submit" class="btn">My page</button>
                         </div>
                     </form>
-                    <form action="/user/signUp" method="post">
+                    <form action="/user/logout" method="post">
                         <div class="loginarea">
-                            <button type="submit" class="btn">Sign Up</button>
-
+                            <button type="submit" class="btn">Logout</button>
                         </div>
                     </form>
                     <form action="/aboutUs" method="post">
                         <div class="loginarea">
-                            <button type="submit" class="btn">About Us</button>
+                            <button type="submit" class="btn">AboutUs</button>
                         </div>
                     </form>
+                </div>
+                <% } else { %>
+                    <!-- 로그인이 되어있지 않을 때 보여질 버튼 -->
+                    <div class="mainbuttons">
+                        <form action="/user/signIn" method="post">
+                            <div class="loginarea">
+                                <button type="submit" class="btn">Sign In</button>
+                            </div>
+                        </form>
+                        <form action="/user/signUp" method="post">
+                            <div class="loginarea">
+                                <button type="submit" class="btn">Sign Up</button>
+
+                            </div>
+                        </form>
+                        <form action="/aboutUs" method="post">
+                            <div class="loginarea">
+                                <button type="submit" class="btn">About Us</button>
+                            </div>
+                        </form>
+                    </div>
+
                     <% } %>
                         <div class="container1">
                             <div class="container2">
-
                                 <div class="header" id="header">Insert your Stock</div>
                                 <form action="/search" method="post" class="center">
                                     <input class="input inp-border a1" type="text" id="stock_name" name="stock_name"
                                         required placeholder="stock">
                                 </form>
+
+                                <div class="modalbuttos">
+                                    <!-- 모달 버튼 -->
+                                    <button type="button" class="popup-button"
+                                        onclick="showModal('Trading Sight의 주가예측 방법은 과거의 주가를 기반으로하는 기술적 분석 방식입니다. <br>최근 1년내 주식의 종가와 최근 50일, 20일의 종가를 바탕으로 LSTM 딥러닝 모델을 사용하여 주가를 예측합니다.')">
+                                        주가 예측
+                                        방법
+                                    </button>
+                                    <button type="button" class="popup-button"
+                                        onclick="showModal('현재 TradingSight에서 검색가능한 항목은 KOSPI, KOSDAQ에 등재된 주식입니다.')">검색
+                                        가능한
+                                        주식 목록
+                                    </button>
+                                </div>
+
+                                <!-- 모달 창 -->
+                                <div id="myModal" class="modal">
+                                    <div class="modal-content">
+                                        <span class="modal-close" onclick="closeModal()">&times;</span>
+                                        <p id="modalMessage"></p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
+
+
 
                         <script>
                             // 텍스트를 한 글자씩 나타내는 함수
@@ -77,6 +105,28 @@
                                 var text = document.getElementById('header').innerHTML; // 원본 텍스트 가져오기
                                 document.getElementById('header').innerHTML = ''; // 기존 텍스트 초기화
                                 typeWriter(text, 0, 'header'); // 타이핑 효과 함수 호출
+                            };
+
+                            // 모달 창 표시 함수
+                            function showModal(message) {
+                                var modal = document.getElementById('myModal');
+                                var modalMessage = document.getElementById('modalMessage');
+                                modalMessage.innerHTML = message; // 모달 창에 메시지 설정
+                                modal.style.display = 'block'; // 모달 창을 보이게 함
+                            }
+
+                            // 모달 창 닫기 함수
+                            function closeModal() {
+                                var modal = document.getElementById('myModal');
+                                modal.style.display = 'none'; // 모달 창을 숨김
+                            }
+
+                            // 모달 창 영역 외 클릭 시 닫기
+                            window.onclick = function (event) {
+                                var modal = document.getElementById('myModal');
+                                if (event.target == modal) {
+                                    modal.style.display = 'none';
+                                }
                             };
                         </script>
 </body>

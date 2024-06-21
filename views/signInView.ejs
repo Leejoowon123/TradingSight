@@ -10,7 +10,7 @@
 
 <body>
     <div class="container">
-        <div>로그인 페이지</div>
+        <div class="pagename">Sign In</div>
         <!-- 서버에서 전달된 메시지가 있다면 경고창을 표시 -->
         <% if (message) { %>
             <script>
@@ -18,7 +18,7 @@
             </script>
             <% } %>
 
-                <form action="/user/signIn/signInLogic" method="post">
+                <form class="loginbox" action="/user/signIn/signInLogic" method="post">
                     <div class="input-container">
                         <div class="input-content">
                             <div class="input-dist">
@@ -34,8 +34,10 @@
                     <button class="submit-button" type="submit">sign In</button>
                 </form>
                 <form action="/"><button class="submit-button">뒤로가기</button></form>
-                
+
     </div>
+
+
 </body>
 
 </html>
