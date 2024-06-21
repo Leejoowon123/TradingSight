@@ -77,7 +77,8 @@ def receive_stock_code():
     plt.legend()    
 
     # 이미지 저장(서버에 저장되는것을 구현)
-    image_dir = '/Users/Zen1/leeseongjun/nodejsStudy/aaa'
+
+    image_dir = '/Users/Zen1/leeseongjun/nodejsStudy/aaa' #이성준
     if not os.path.exists(image_dir):
         os.makedirs(image_dir)
 

@@ -15,23 +15,50 @@
         </script>
         <% } %>
             <div class="container">
-                <div>회원가입 페이지</div>
-                <form action="/user/signUp/signUpLogic" method="post">
+                <div class="pagename">Sign Up</div>
+                <form class="loginbox" action="/user/signUp/signUpLogic" method="post">
                     <div class="input-container">
                         <div class="input-content">
                             <div class="input-dist">
                                 <div class="input-type">
                                     <input class="input-is userId" type="text" id="userId" name="userId"
-                                        placeholder="ID">
+                                        placeholder="ID" onfocus="showMessage('userId')" onblur="hideMessage()">
                                     <input class="input-is userPassword" type="password" id="userPassword"
-                                        name="userPassword" placeholder="Password">
+                                        name="userPassword" placeholder="Password" onfocus="showMessage('userPassword')"
+                                        onblur="hideMessage()">
                                 </div>
                             </div>
                         </div>
                     </div>
                     <button class="submit-button" type="submit">회원가입</button>
                 </form>
+                <form action="/">
+                    <button class="submit-button">뒤로가기</button>
+                </form>
+                <div class="message" id="messageBox"></div>
             </div>
+
+            <script>
+                // 아이디와 비밀번호에 대한 규칙 메시지
+                const messages = {
+                    userId: '아이디 규칙:- 최소 8자 이상 16자 이하 영문자와 숫자만 포함',
+                    userPassword: '비밀번호 규칙:- 최소 8자 이상 16자 이하 영문자와 숫자만 포함'
+                };
+
+                // 메시지 표시 함수
+                function showMessage(inputId) {
+                    let messageBox = document.getElementById('messageBox');
+                    messageBox.innerText = messages[inputId];
+                    messageBox.style.display = 'block'; // 메시지 박스를 보이게 함
+                }
+
+                // 메시지 숨김 함수
+                function hideMessage() {
+                    let messageBox = document.getElementById('messageBox');
+                    messageBox.innerText = ''; // 메시지 초기화
+                    messageBox.style.display = 'none'; // 메시지 박스 숨김
+                }
+            </script>
 </body>
 
 </html>
