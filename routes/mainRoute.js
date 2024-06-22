@@ -358,9 +358,9 @@ router.get('/stockShow', async (req, res) => {
               // 저장할 파일 경로 설정
               const fileName = `${stockCode}.png`;
               // const imageUrl = `C:/workspace/TradingSight/stockImages${fileName}`; //이주원
-              //const dirPath = '/Users/idoyun/nodeP/TradingSight/stockImages'; //이도윤
-              const dirPath = '/Users/Zen1/leeseongjun/nodejsStudy/TradingSight/stockImages';
-              // const dirPath = '/Users/swFinal/TradingSight/stockImages';
+              const dirPath = '/Users/idoyun/nodeP/TradingSight/stockImages'; //이도윤
+              // const dirPath = '/Users/Zen1/leeseongjun/nodejsStudy/TradingSight/stockImages'; //이성준
+              // const dirPath = '/Users/swFinal/TradingSight/stockImages'; //김태원
               const filePath = path.join(dirPath, fileName);
 
               // 디렉토리 존재 여부 확인 및 생성
@@ -376,7 +376,8 @@ router.get('/stockShow', async (req, res) => {
                 }
 
                 // 이미지 파일 경로 반환
-                const imageUrl = `/Users/Zen1/leeseongjun/nodejsStudy/TradingSight/stockImages${fileName}`;
+                // const imageUrl = `/Users/Zen1/leeseongjun/nodejsStudy/TradingSight/stockImages${fileName}`; //이성준
+                const imageUrl = `/Users/idoyun/nodeP/TradingSight/stockImages${fileName}`; //이도윤
                 res.render('stockShowView', { stockCode, stockName, imageUrl, message }); //ejs로 값을 넘기기
               });
             } catch (error) {
