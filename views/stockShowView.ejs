@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>StockShow</title>
-    <link rel="stylesheet" href="public/stylesheets/stockShowView.css">
+    <link rel="stylesheet" href="/public/stylesheets/stockShowView.css">
 </head>
 
 <body>
@@ -70,10 +70,30 @@
                     <button class="btn" type="submit"><strong>돌아가기</strong></button>
                 </form>
             </div>
-
+            
             <script>
                 // 이미지를 로드하기 위한 함수
                 function loadImage() {
+                    var xhrAI = new XMLHttpRequest();
+                    xhrAI.open('POST', '/stockShow/AI');
+                    xhrAI.setRequestHeader('Content-Type', 'application/json');
+                    xhrAI.onload = function () {
+                        if (xhrAI.status === 200) {
+                            var outputText = xhrAI.response.replace('{"message":"', '')
+                            .replace('"}', '')
+                            .replace(/\\n\\n/g, '<br>')
+                            .replace(/\*\*(.+?)\*\*/g, '<strong style="font-size: larger; font: bolder;">$1</strong>')
+                            .replace(/\\n/g, '<br>')
+                            .replace(/\*/g, '&nbsp;');
+                            var template = '<div class="line"><span class="chat-box">' + outputText +'</span></div>';
+                            document.querySelector('.chatbot-body').insertAdjacentHTML('beforeend',template);
+                        } else {
+                            // 에러 처리
+                            console.error('답을 받아오는 데 실패했습니다.');
+                        }
+                    };
+                    xhrAI.send();
+
                     // AJAX 요청
                     var xhr = new XMLHttpRequest();
                     xhr.open('POST', '/stockShow/image');
@@ -94,40 +114,9 @@
                     };
                     xhr.send();
 
-                    var xhrAI = new XMLHttpRequest();
-                    xhrAI.open('POST', '/stockShow/AI');
-                    xhrAI.setRequestHeader('Content-Type', 'application/json');
-                    xhrAI.onload = function () {
-                        if (xhrAI.status === 200) {
-                            var outputText = xhrAI.response;
-                            var template = '<div class="line"><span class="chat-box">' + outputText + '</span></div>';
-                            document.querySelector('.chatbot-body').insertAdjacentHTML('beforeend', template);
-                        } else {
-                            // 에러 처리
-                            console.error('답을 받아오는 데 실패했습니다.');
-                        }
-                    };
-                    xhrAI.send();
                 }
             </script>
-            <!-- <script>
-                document.querySelector('#send').addEventListener('click', function() {
-                    var xhrAI = new XMLHttpRequest();
-                    xhrAI.open('POST', '/stockShow/AI');
-                    xhrAI.setRequestHeader('Content-Type', 'application/json');
-                    xhrAI.onload = function () {
-                        if (xhrAI.status === 200) {
-                            var outputText = xhrAI.response;
-                            var template = '<div class="line"><span class="chat-box">' + outputText +'</span></div>';
-                            document.querySelector('.chatbot-body').insertAdjacentHTML('beforeend',template);
-                        } else {
-                            // 에러 처리
-                            console.error('이미지를 받아오는 데 실패했습니다.');
-                        }
-                    };
-                    xhrAI.send();
-                })
-            </script> -->
+
 </body>
 
 </html>
