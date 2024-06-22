@@ -199,9 +199,11 @@ strong {
 }
 
 .chat-box {
-  background: #eee;
+  background: black;
   padding: 5px;
-  max-width: 200px;
+  max-width: 1000px;
+  font-size: large;
+  color: #eee;
 }
 
 .mine {
