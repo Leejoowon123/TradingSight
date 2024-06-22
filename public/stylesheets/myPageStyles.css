@@ -10,6 +10,8 @@ body {
   justify-content: center;
   align-items: center;
   background-color: black;
+  flex-direction: column;
+
   /* 검은색 배경 추가 */
 }
 
@@ -74,6 +76,7 @@ body {
   justify-content: center;
   flex-direction: row;
   margin-top: 2.5em;
+  padding: 5px;
 }
 
 .button1 {
@@ -112,7 +115,7 @@ body {
 }
 
 .button3 {
-  padding: 0.5em;
+  padding: 10px;
   padding-left: 1.1em;
   padding-right: 1.1em;
   border-radius: 5px;
@@ -121,6 +124,8 @@ body {
   transition: .4s ease-in-out;
   background-image: linear-gradient(163deg, #00ff75 0%, #3700ff 100%);
   color: rgb(0, 0, 0);
+  font-size: 24px;
+  font-weight: 500;
 }
 
 .button3:hover {
@@ -146,4 +151,27 @@ body {
 
 .card:hover {
   box-shadow: 0px 0px 30px 1px rgba(0, 255, 117, 0.30);
+}
+
+.mypagename {
+  color: white;
+  font-size: 58px;
+  font-weight: 600;
+  padding-bottom: 20px;
+
+}
+
+.labelclass {
+  justify-content: center;
+  align-items: center;
+}
+
+.buttonbox {
+  padding: 10px;
+}
+
+.innername {
+  font-size: 38px;
+  font-weight: 600;
+  margin: 15px;
 }

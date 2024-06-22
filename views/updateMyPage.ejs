@@ -14,29 +14,35 @@
             alert('<%= message %>'); // 서버에서 전달된 메시지를 경고창으로 표시
         </script>
         <% } %>
-            <p>myPage</p>
-            <div class="userIdarea">
-                <p for="userId">
-                    사용자 ID: <%= userId %>
-                </p>
+            <p class="pagename">Upate Password</p>
+
+            <div class="inputarea">
+                <div class="userIdarea">
+                    <p for="userId">
+                        사용자 ID: <%= userId %>
+                    </p>
+                </div>
+
+                <form class="formclass" action="/user/myPage/updateNewPassword" method="post">
+                    <div>
+                        <p for="userPassword">변경할 비밀번호</p>
+                        <!-- 사용자가 입력할 새 비밀번호 -->
+                        <div class="box-input">
+                            <div class="border">
+                                <input class="input" type="password" id="userPassword" name="userPassword"
+                                    placeholder="새 비밀번호">
+                            </div>
+                        </div>
+
+                        <!-- <input type="password" id="userPassword" name="userPassword" placeholder="새 비밀번호"> -->
+                    </div>
+                    <div class="removeId">
+                        <button class="button" type="submit">회원정보 수정</button>
+                    </div>
+                </form>
             </div>
 
-            <form action="/user/myPage/updateNewPassword" method="post">
-                <div>
-                    <p for="userPassword">변경할 비밀번호</p>
-                    <!-- 사용자가 입력할 새 비밀번호 -->
-                    <div class="box-input">
-                        <div class="border">
-                          <input class="input" type="password" id="userPassword" name="userPassword" placeholder="새 비밀번호">
-                        </div>
-                    </div>
-                      
-                    <!-- <input type="password" id="userPassword" name="userPassword" placeholder="새 비밀번호"> -->
-                </div>
-                <div class="removeId">
-                    <button class="button" type="submit">회원정보 수정</button>
-                </div>
-            </form>
+
 </body>
 
 </html>
