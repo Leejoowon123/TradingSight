@@ -14,6 +14,7 @@ const path = require('path'); // path 모듈 추가
 const fs = require('fs'); // fs 모듈 추가
 const { session } = require('passport');
 const favorite = require('../models/favoriteStockCodeNameModel');
+const bcrypt = require('bcrypt');
 
 //get main화면을 랜더링
 router.get('/', async (req, res) => {
@@ -35,22 +36,35 @@ router.post('/user/signIn', async (req, res) => {
 router.post('/user/signIn/signInLogic', async (req, res) => {
   const { userId, userPassword } = req.body;
   console.log({ userId, userPassword });
+
   try {
-    const user = await User.findOne({ userId, userPassword });
-    console.log(user + '로그인 유저 정보');
+    // 사용자 찾기
+    const user = await User.findOne({ userId });
+    console.log(user + ' 로그인 유저 정보');
 
     if (!user) {
-      res.redirect('/user/signIn?message=로그인 정보를 확인해 주세요.')
+      return res.redirect('/user/signIn?message=로그인 정보를 확인해 주세요.');
     }
-    else {
-      req.session.userId = user.userId;
-      res.redirect('/');
+
+    // 비밀번호 비교 (사용자 비밀번호가 존재하는지 확인)
+    if (!user.userPassword) {
+      console.error("No hashed password found for the user.");
+      return res.redirect('/user/signIn?message=로그인 정보를 확인해 주세요.');
     }
+
+    const isMatch = await bcrypt.compare(userPassword, user.userPassword);
+    if (!isMatch) {
+      return res.redirect('/user/signIn?message=로그인 정보를 확인해 주세요.');
+    }
+
+    // 세션에 사용자 아이디 저장
+    req.session.userId = user.userId;
+    res.redirect('/');
   } catch (error) {
     console.error("Error during login:", error);
     res.status(500).send("Error during login");
   }
-})
+});
 
 router.get('/user/signUp', async (req, res) => {
   const message = req.query.message || ''; // message 쿼리 파라미터를 가져오고, 값이 없는 경우 빈 문자열을 사용합니다.
@@ -62,21 +76,33 @@ router.post('/user/signUp', async (req, res) => {
 })
 
 router.post('/user/signUp/signUpLogic', async (req, res) => {
-  const { userId, userPassword } = req.body;
+  const { userId, userPassword, userPassword2 } = req.body;
   // 아이디 유효성 검사: 8자 이상 16자 이하, 한글과 영어 숫자만 허용
   const userIdRegex = /^[가-힣a-zA-Z0-9]{8,16}$/;
   if (!userIdRegex.test(userId)) {
     return res.redirect('/user/signUp?message=아이디는 8자 이상이어야 하며, 한글과 영어 숫자만 사용 가능합니다.');
   }
-  // 비밀번호 유효성 검사: 8자 이상
+
+  //비밀번호 입력확인
+  if (userPassword != userPassword2) {
+    return res.redirect('/user/signUp?message=비밀번호와 비밀번호 확인을 확인하세요.');
+  }
+
   const userPssswordRegex = /^[가-힣a-zA-Z0-9]{8,16}$/;
-  if (!userPssswordRegex) {
+  const userPassword2Regex = /^[가-힣a-zA-Z0-9]{8,16}$/;
+  //비밀번호 유효성 검사
+  if (!userPssswordRegex.test(userPassword) || !userPassword2Regex.test(userPassword2)) {
     return res.redirect('/user/signUp?message=비밀번호는 8자 이상이어야 하며, 한글과 영어 숫자만 사용 가능합니다.');
   }
+  //아이디 중복확인
   const user = await User.findOne({ userId });
   if (!user) {
     try {
-      const newUser = await User.create({ userId, userPassword });
+      const saltRounds = 10;
+      const hashedPassword = await bcrypt.hash(userPassword, saltRounds);
+
+      const newUser = await User.create({ userId, userPassword: hashedPassword });
+      console.log(hashedPassword);
       console.log(newUser + ' user created!');
       return res.redirect('/user/signIn?message=회원가입 후 로그인해 주세요');
     } catch (error) {
@@ -87,7 +113,6 @@ router.post('/user/signUp/signUpLogic', async (req, res) => {
     return res.status(400).send('중복된 아이디');
   }
 });
-
 
 router.get('/user/myPage', async (req, res) => {
   const message = req.query.message || '';
@@ -165,15 +190,18 @@ router.post('/user/myPage/updateNewPassword', async (req, res) => {
     return; // 이후 코드 실행을 막기 위해 리턴 추가
   }
 
-  if (newPassword.length < 8 || !/^[가-힣a-zA-Z0-9]{8,}$/.test(newPassword)) {
+  if (newPassword.length < 8 || !/^[가-힣a-zA-Z0-9]{8,16}$/.test(newPassword)) {
     res.redirect('/user/myPage/updateMyPage?message=비밀번호는 8자 이상이어야 하며, 한글, 영어 대소문자, 숫자로만 구성되어야 합니다.');
     return;
   }
 
   try {
     if (userId) {
+      const saltRounds = 10;
+      const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+
       // 사용자 아이디로 데이터베이스에서 사용자를 찾아 비밀번호 업데이트
-      const result = await User.updateOne({ userId: userId }, { $set: { userPassword: newPassword } });
+      const result = await User.updateOne({ userId: userId }, { $set: { userPassword: hashedPassword } });
       res.redirect('/user/myPage?message=비밀번호가 업데이트 되었습니다.');
     } else {
       // 사용자 아이디가 없으면 오류 메시지를 반환
@@ -358,8 +386,8 @@ router.get('/stockShow', async (req, res) => {
               // 저장할 파일 경로 설정
               const fileName = `${stockCode}.png`;
               // const imageUrl = `C:/workspace/TradingSight/stockImages${fileName}`; //이주원
-              const dirPath = '/Users/idoyun/nodeP/TradingSight/stockImages'; //이도윤
-              // const dirPath = '/Users/Zen1/leeseongjun/nodejsStudy/TradingSight/stockImages'; //이성준
+              // const dirPath = '/Users/idoyun/nodeP/TradingSight/stockImages'; //이도윤
+              const dirPath = '/Users/Zen1/leeseongjun/nodejsStudy/TradingSight/stockImages'; //이성준
               // const dirPath = '/Users/swFinal/TradingSight/stockImages'; //김태원
               const filePath = path.join(dirPath, fileName);
 
@@ -376,8 +404,8 @@ router.get('/stockShow', async (req, res) => {
                 }
 
                 // 이미지 파일 경로 반환
-                // const imageUrl = `/Users/Zen1/leeseongjun/nodejsStudy/TradingSight/stockImages${fileName}`; //이성준
-                const imageUrl = `/Users/idoyun/nodeP/TradingSight/stockImages${fileName}`; //이도윤
+                const imageUrl = `/Users/Zen1/leeseongjun/nodejsStudy/TradingSight/stockImages${fileName}`; //이성준
+                //const imageUrl = `/Users/idoyun/nodeP/TradingSight/stockImages${fileName}`; //이도윤
                 res.render('stockShowView', { stockCode, stockName, imageUrl, message }); //ejs로 값을 넘기기
               });
             } catch (error) {
