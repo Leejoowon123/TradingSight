@@ -14,12 +14,13 @@
             alert('<%= message %>'); // 서버에서 전달된 메시지를 경고창으로 표시
         </script>
         <% } %>
+            <div class="mypagename">My Page</div>
 
             <div class="card">
                 <div class="card2">
                     <div class="form">
-                        <p id="heading">My Page</p>
-                        <label for="userId">
+                        <p class="innername" id="heading">회원 정보</p>
+                        <label class="labelclass" for="userId">
                             <p class="text-inline">사용자아이디 : </p>
                             <p class="text-inline">
                                 <%= userId %>
@@ -28,19 +29,29 @@
 
                         <div class="btn">
 
-                            <form action="/user/myPage/updateUser" method="post">
-                                <button class="button1" type="submit">비밀번호 변경</button>
-                            </form>
+                            <div class="buttonbox">
+                                <form action="/user/myPage/updateUser" method="post">
+                                    <button class="button3" type="submit">비밀번호 변경</button>
+                                </form>
+                            </div>
 
-                            <form id="deleteUserForm" action="/user/myPage/deleteUser" method="post"
-                                onsubmit="return confirmDelete()">
-                                <button class="button3" type="submit" id="deleteAccountButton">회원탈퇴</button>
-                            </form>
+                            <div class="buttonbox">
+                                <form id="deleteUserForm" action="/user/myPage/deleteUser" method="post"
+                                    onsubmit="return confirmDelete()">
+                                    <button class="button3" type="submit" id="deleteAccountButton">회원탈퇴</button>
+                                </form>
+                            </div>
 
-                            <form id="userFavorite" action="/user/myPage/favorite" method="post">
-                                <button class="button3" type="submit" id="userFavoriteButton">관심종목</button>
-                            </form>
-                            <button class="button3" onclick="history.back()">뒤로가기</button>
+                            <div class="buttonbox">
+                                <form id="userFavorite" action="/user/myPage/favorite" method="post">
+                                    <button class="button3" type="submit" id="userFavoriteButton">관심종목</button>
+                                </form>
+                            </div>
+
+                            <div class="buttonbox">
+                                <button class="button3" onclick="history.back()">뒤로가기</button>
+                            </div>
+
                         </div>
                     </div>
                 </div>
