@@ -6,7 +6,7 @@ const fs = require("fs");
 const path = require("path");
 
 // Access your API key as an environment variable (see "Set up your API key" above)
-const genAI = new GoogleGenerativeAI("AIzaSyCNoJmeAJ2OsQcBkHt640GrW8dHIX-j6-o");
+const genAI = new GoogleGenerativeAI("Set up your API Key");
 
 // Converts local file information to a GoogleGenerativeAI.Part object.
 function fileToGenerativePart(relativePath, mimeType) {
